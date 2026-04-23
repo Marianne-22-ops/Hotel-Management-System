@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400" prefWidth="600"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.LoginController">
+
+    <children>
+
+        <Label layoutX="240" layoutY="60"
+               text="HOTEL MANAGEMENT SYSTEM">
+
+            <font>
+                <Font size="20"/>
+            </font>
+
+        </Label>
+
+
+        <Label layoutX="170" layoutY="150"
+               text="Username"/>
+
+        <TextField fx:id="txtUsername"
+                   layoutX="260"
+                   layoutY="145"
+                   prefWidth="160"/>
+
+
+        <Label layoutX="170"
+               layoutY="200"
+               text="Password"/>
+
+        <PasswordField fx:id="txtPassword"
+                       layoutX="260"
+                       layoutY="195"
+                       prefWidth="160"/>
+
+
+        <Button layoutX="260"
+                layoutY="250"
+                prefWidth="80"
+                text="Login"
+                onAction="#handleLogin"/>
+
+
+        <Button layoutX="350"
+                layoutY="250"
+                prefWidth="80"
+                text="Exit"
+                onAction="#handleExit"/>
+
+
+        <Hyperlink layoutX="260"
+                   layoutY="300"
+                   text="Create Account"/>
+
+    </children>
+
+</AnchorPane>
