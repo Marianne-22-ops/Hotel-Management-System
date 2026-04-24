@@ -1,53 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
+<AnchorPane prefHeight="500.0"
+            prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            style="-fx-background-color: #e2e8f0;">
+            fx:controller="controller.LoginController">
 
     <children>
 
-        <!-- CENTER CONTAINER -->
-        <StackPane AnchorPane.topAnchor="0"
-                   AnchorPane.bottomAnchor="0"
-                   AnchorPane.leftAnchor="0"
-                   AnchorPane.rightAnchor="0">
+        <HBox prefHeight="500" prefWidth="800">
 
-            <!-- FORM CARD -->
-            <VBox spacing="15"
+            <!-- LEFT PANEL -->
+
+            <VBox prefWidth="350"
                   alignment="CENTER"
-                  maxWidth="320"
-                  style="-fx-border-color:#cbd5e1; -fx-border-radius:12; -fx-padding:25; -fx-background-color:white;">
+                  spacing="10"
+                  style="-fx-background-color:#1e293b;">
 
-                <!-- TITLE -->
-                <Label text="Login"
-                       style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                <children>
 
-                <!-- INPUTS -->
-                <TextField promptText="Username"
-                           prefWidth="250"/>
+                    <Label text="Hotel Management System"
+                           style="-fx-text-fill:white; -fx-font-size:24px; -fx-font-weight:bold;"/>
 
-                <PasswordField promptText="Password"
-                               prefWidth="250"/>
+                    <Label text="Login to continue managing hotel operations"
+                           style="-fx-text-fill:white; -fx-font-size:13px;"/>
 
-                <!-- BUTTON -->
-                <Button text="Login"
-                        prefWidth="250"
-                        style="-fx-background-color:#1e293b; -fx-text-fill:white;"/>
-
-                <!-- EXTRA -->
-                <Label text="Forgot password?"
-                       style="-fx-text-fill:blue; -fx-font-size:12px;"/>
+                </children>
 
             </VBox>
 
-        </StackPane>
+
+            <!-- RIGHT PANEL -->
+
+            <VBox prefWidth="450"
+                  alignment="CENTER"
+                  spacing="20"
+                  style="-fx-background-color:white;"
+                  fillWidth="false">
+
+                <children>
+
+                    <Label text="Staff Login"
+                           style="-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+
+
+                    <TextField fx:id="txtUsername"
+                               promptText="Username"
+                               prefWidth="220"/>
+
+
+                    <PasswordField fx:id="txtPassword"
+                                   promptText="Password"
+                                   prefWidth="220"/>
+
+
+                    <Button text="Login"
+                            prefWidth="180"
+                            onAction="#handleLogin"
+                            style="-fx-background-color:#1e293b; -fx-text-fill:white;"/>
+
+
+                    <Hyperlink text="Don't have an account? Register"
+                               onAction="#openRegister"/>
+
+                </children>
+
+            </VBox>
+
+        </HBox>
 
     </children>
-</AnchorPane>
 
-<!-- test change -->
-<!-- test change -->
+</AnchorPane>

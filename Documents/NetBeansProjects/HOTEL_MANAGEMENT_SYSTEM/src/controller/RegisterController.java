@@ -7,14 +7,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class RegisterController implements Initializable {
@@ -31,12 +33,21 @@ public class RegisterController implements Initializable {
     @FXML
     private PasswordField txtPassword;
 
+
     @FXML
     private void handleSignup(ActionEvent event) {
 
         try {
 
-            Connection conn = DBConnection.connect();
+            Connection conn = DBConnection.connect(); // ✅ FIXED HERE
+
+            if (conn == null) {
+
+                System.out.println("Database connection failed!");
+                return;
+
+            }
+
             String sql = "INSERT INTO users(full_name,email,username,password) VALUES(?,?,?,?)";
 
             PreparedStatement pst = conn.prepareStatement(sql);
@@ -50,13 +61,13 @@ public class RegisterController implements Initializable {
 
             System.out.println("User registered successfully!");
 
-            // Open Login page
             Parent root = FXMLLoader.load(getClass().getResource("/view/LOGIN.fxml"));
 
             Stage stage = (Stage) txtUsername.getScene().getWindow();
 
             stage.setScene(new Scene(root));
             stage.show();
+
 
         } catch (IOException | SQLException e) {
 
@@ -65,6 +76,28 @@ public class RegisterController implements Initializable {
         }
 
     }
+
+
+    @FXML
+    private void openLogin(ActionEvent event) {
+
+        try {
+
+            Parent root = FXMLLoader.load(getClass().getResource("/view/LOGIN.fxml"));
+
+            Stage stage = (Stage) txtUsername.getScene().getWindow();
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+
+            System.out.println("Error loading Login page");
+
+        }
+
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

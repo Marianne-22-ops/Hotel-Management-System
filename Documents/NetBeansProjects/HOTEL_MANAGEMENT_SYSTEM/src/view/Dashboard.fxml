@@ -8,82 +8,150 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
+<AnchorPane prefHeight="500.0" prefWidth="800.0"
+            style="-fx-background-color: #f5f7fa;"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DashboardController">
 
    <children>
 
-      <BorderPane prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #94a3b8">
+      <BorderPane prefHeight="500.0"
+                  prefWidth="800.0"
+                  style="-fx-background-color: #94a3b8">
 
-         <!-- 🔝 TOP HEADER -->
+         <!-- TOP HEADER -->
          <top>
-            <AnchorPane prefHeight="70.0" style="-fx-background-color: #1e293b;">
+            <AnchorPane prefHeight="70.0"
+                        style="-fx-background-color: #1e293b;">
                <children>
-                  <Label layoutX="304.0" layoutY="19.0" text="Hotel Management Dashboard" textFill="WHITE">
+
+                  <Label layoutX="240.0"
+                         layoutY="18.0"
+                         text="Hotel Management Dashboard"
+                         textFill="WHITE">
+
                      <font>
-                        <Font name="Berlin Sans FB" size="28.0" />
+                        <Font name="Berlin Sans FB"
+                              size="28.0"/>
                      </font>
+
                   </Label>
+
                </children>
             </AnchorPane>
          </top>
 
-         <!-- 📌 LEFT SIDEBAR -->
+
+         <!-- LEFT SIDEBAR -->
          <left>
-            <VBox prefWidth="200.0" spacing="12.0" style="-fx-background-color: #0f172a;" BorderPane.alignment="CENTER">
+
+            <VBox prefWidth="200.0"
+                  spacing="12.0"
+                  style="-fx-background-color: #0f172a;"
+                  BorderPane.alignment="CENTER">
 
                <padding>
-                  <Insets left="15.0" top="25.0" />
+                  <Insets left="15.0"
+                          top="25.0"/>
                </padding>
 
                <children>
-                  <Button style="-fx-background-color:#3b82f6; -fx-text-fill:white; -fx-background-radius:8;" text="Dashboard" />
 
-                  <Button onAction="#handleRooms" style="-fx-text-fill:black; -fx-background-radius:8;" text="Manage Rooms" />
+                  <Button text="Dashboard"
+                          onAction="#handleDashboard"
+                          style="-fx-background-color:#3b82f6;
+                                 -fx-text-fill:white;
+                                 -fx-background-radius:8;"/>
 
-                  <Button onAction="#handleGuests" style="-fx-text-fill:black; -fx-background-radius:8;" text="Manage Guests" />
 
-                  <Button onAction="#handleReservations" style="-fx-text-fill:black; -fx-background-radius:8;" text="Reservations" />
+                  <Button text="Manage Rooms"
+                          onAction="#handleRooms"
+                          style="-fx-background-radius:8;"/>
 
-                  <Button onAction="#handlePayments" style="-fx-text-fill:black; -fx-background-radius:8;" text="Payments" />
 
-                  <Button onAction="#handleReports" style="-fx-text-fill:black; -fx-background-radius:8;" text="Reports" />
+                  <Button text="Manage Guests"
+                          onAction="#handleGuests"
+                          style="-fx-background-radius:8;"/>
 
-                  <Button style="-fx-background-color:#ef4444; -fx-text-fill:white; -fx-background-radius:8;" text="Logout" />
+
+                  <Button text="Reservations"
+                          onAction="#handleReservations"
+                          style="-fx-background-radius:8;"/>
+
+
+                  <Button text="Payments"
+                          onAction="#handlePayments"
+                          style="-fx-background-radius:8;"/>
+
+
+                  <Button text="Reports"
+                          onAction="#handleReports"
+                          style="-fx-background-radius:8;"/>
+
+
+                  <Button text="Logout"
+                          onAction="#handleLogout"
+                          style="-fx-background-color:#ef4444;
+                                 -fx-text-fill:white;
+                                 -fx-background-radius:8;"/>
+
                </children>
+
             </VBox>
+
          </left>
 
-         <!-- 🧩 CENTER CONTENT -->
+
+         <!-- CENTER CONTENT -->
          <center>
-            <AnchorPane fx:id="workspacePane" style="-fx-background-color: #f8fafc;" BorderPane.alignment="CENTER">
+
+            <AnchorPane fx:id="workspacePane"
+                        style="-fx-background-color: #f8fafc;"
+                        BorderPane.alignment="CENTER">
 
                <children>
 
-                  <!-- Welcome Text -->
-                  <Label layoutX="169.0" layoutY="36.0" style="-fx-font-size: 20px; -fx-text-fill:#1e293b;" text="Welcome to Hotel Dashboard">
-                     <font>
-                        <Font name="Century Gothic Bold" size="12.0" />
-                     </font></Label>
+                  <!-- Dashboard Welcome Text -->
+                  <Label layoutX="150.0"
+                         layoutY="36.0"
+                         text="Welcome to Hotel Dashboard"
+                         style="-fx-font-size: 20px;
+                                -fx-text-fill:#1e293b;"/>
 
-                  <!-- Simple Cards -->
-                  <VBox layoutX="244.0" layoutY="110.0" spacing="15.0">
-   
-                     <Label style="-fx-background-color:white; -fx-padding:10; -fx-background-radius:10;" text="Total Rooms: 120" />
 
-                     <Label style="-fx-background-color:white; -fx-padding:10; -fx-background-radius:10;" text="Guests: 85" />
+                  <!-- Dashboard Summary Cards -->
+                  <VBox layoutX="250.0"
+                        layoutY="120.0"
+                        spacing="15.0">
 
-                     <Label style="-fx-background-color:white; -fx-padding:10; -fx-background-radius:10;" text="Revenue: $5000" />
+                     <Label text="Total Rooms: 120"
+                            style="-fx-background-color:white;
+                                   -fx-padding:10;
+                                   -fx-background-radius:10;"/>
+
+
+                     <Label text="Guests: 85"
+                            style="-fx-background-color:white;
+                                   -fx-padding:10;
+                                   -fx-background-radius:10;"/>
+
+
+                     <Label text="Revenue: $5000"
+                            style="-fx-background-color:white;
+                                   -fx-padding:10;
+                                   -fx-background-radius:10;"/>
 
                   </VBox>
 
                </children>
+
             </AnchorPane>
+
          </center>
 
       </BorderPane>
 
    </children>
-</AnchorPane>
 
-<!-- test change -->
-<!-- test change -->
+</AnchorPane>

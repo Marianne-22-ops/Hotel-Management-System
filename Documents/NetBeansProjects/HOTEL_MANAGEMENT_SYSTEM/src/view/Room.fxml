@@ -5,59 +5,104 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.RoomController"
             style="-fx-background-color:#1e293b;">
 
     <children>
 
-        <!-- MAIN CONTAINER -->
         <VBox spacing="20"
               AnchorPane.topAnchor="20"
               AnchorPane.leftAnchor="20"
               AnchorPane.rightAnchor="20"
               AnchorPane.bottomAnchor="20">
 
-            <!-- TITLE -->
             <Label text="Room Management"
-                   style="-fx-font-size:20px; -fx-font-weight:bold;  -fx-text-fill:white;"/>
+                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+
 
             <!-- FORM BOX -->
-            <VBox spacing="10"
-                  style="
-                    -fx-border-color:#cbd5e1;
-                    -fx-border-radius:12;
-                    -fx-background-radius:12;
-                    -fx-padding:15;
-                    -fx-background-color:rgba(255,255,255,0.7);
-                  ">
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-padding:15; -fx-background-radius:12;">
 
+                <!-- INPUT FIELDS -->
                 <HBox spacing="10">
-                    <TextField promptText="Room No" HBox.hgrow="ALWAYS"/>
-                    <ComboBox promptText="Type"/>
-                    <TextField promptText="Price" HBox.hgrow="ALWAYS"/>
 
-                    <Button text="Add"
-                            style="-fx-background-color:#22c55e; -fx-text-fill:white;"/>
+                    <TextField fx:id="roomNoField"
+                               promptText="Room No"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <ComboBox fx:id="typeCombo"
+                              promptText="Type"
+                              prefWidth="150"/>
+
+                    <TextField fx:id="priceField"
+                               promptText="Price"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <ComboBox fx:id="statusCombo"
+                              promptText="Status"
+                              prefWidth="150"/>
+
+                </HBox>
+
+
+                <!-- BUTTONS -->
+                <HBox spacing="10">
+
+                    <Button text="Add Room"
+                            onAction="#addRoom"/>
+
+                    <Button text="Update Room"
+                            onAction="#updateRoom"/>
+
+                    <Button text="Delete Room"
+                            onAction="#deleteRoom"/>
+
+                    <Button text="Change Status"
+                            onAction="#changeStatus"/>
+
+                </HBox>
+
+
+                <!-- SEARCH -->
+                <HBox spacing="10">
+
+                    <TextField fx:id="searchField"
+                               promptText="Search Room Number"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <Button text="Search Room"
+                            onAction="#searchRoom"/>
+
                 </HBox>
 
             </VBox>
 
-            <!-- TABLE BOX -->
-            <VBox VBox.vgrow="ALWAYS"
-                  style="
-                    -fx-border-color:#cbd5e1;
-                    -fx-border-radius:12;
-                    -fx-background-radius:12;
-                    -fx-padding:15;
-                    -fx-background-color:rgba(255,255,255,0.7);
-                  ">
 
-                <TableView VBox.vgrow="ALWAYS">
+            <!-- TABLE -->
+            <VBox VBox.vgrow="ALWAYS"
+                  style="-fx-background-color:white; -fx-padding:15; -fx-background-radius:12;">
+
+                <TableView fx:id="roomTable"
+                           VBox.vgrow="ALWAYS">
+
                     <columns>
-                        <TableColumn text="Room No"/>
-                        <TableColumn text="Type"/>
-                        <TableColumn text="Price"/>
-                        <TableColumn text="Status"/>
+
+                        <TableColumn fx:id="colRoomNo"
+                                     text="Room No"/>
+
+                        <TableColumn fx:id="colType"
+                                     text="Type"/>
+
+                        <TableColumn fx:id="colPrice"
+                                     text="Price"/>
+
+                        <TableColumn fx:id="colStatus"
+                                     text="Status"/>
+
                     </columns>
+
                 </TableView>
 
             </VBox>
@@ -65,7 +110,5 @@
         </VBox>
 
     </children>
-</AnchorPane>
 
-<!-- test change -->
-<!-- test change -->
+</AnchorPane>

@@ -4,7 +4,9 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class DashboardController {
 
@@ -13,9 +15,42 @@ public class DashboardController {
 
 
     @FXML
-    private void handleRooms() {
-        loadPage("/view/Room.fxml");
+    private void handleDashboard() {
+
+        // Clears loaded pages and returns to dashboard default view
+        workspacePane.getChildren().clear();
+
     }
+
+
+    @FXML
+    private void handleLogout() {
+
+        try {
+
+            Parent root = FXMLLoader.load(getClass().getResource("/view/REGISTER.fxml"));
+
+            Stage stage = (Stage) workspacePane.getScene().getWindow();
+
+            stage.setScene(new Scene(root));
+
+        } catch (IOException e) {
+
+            System.out.println("REGISTER.fxml not found");
+
+        }
+
+    }
+
+
+    @FXML
+private void handleRooms() {
+
+    System.out.println("Rooms button clicked");
+
+    loadPage("/view/Room.fxml");
+
+}
 
     @FXML
     private void handleGuests() {
@@ -29,7 +64,7 @@ public class DashboardController {
 
     @FXML
     private void handlePayments() {
-        loadPage("/view/payments.fxml");
+        loadPage("/view/payment.fxml");
     }
 
     @FXML
@@ -43,13 +78,20 @@ public class DashboardController {
         try {
 
             Parent root = FXMLLoader.load(getClass().getResource(page));
+
             workspacePane.getChildren().setAll(root);
 
-        } catch (IOException e) {
+            AnchorPane.setTopAnchor(root, 0.0);
+            AnchorPane.setBottomAnchor(root, 0.0);
+            AnchorPane.setLeftAnchor(root, 0.0);
+            AnchorPane.setRightAnchor(root, 0.0);
 
-            System.out.println("Page not found: " + page);
+        } 
 
-        }
+            catch (IOException e) {
+}
+
+        
 
     }
 
