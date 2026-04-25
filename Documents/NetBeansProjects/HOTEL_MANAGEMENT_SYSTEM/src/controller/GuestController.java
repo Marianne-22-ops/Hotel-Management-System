@@ -19,11 +19,13 @@ public class GuestController {
 
     @FXML private TableView<Guest> guestTable;
     @FXML private TableColumn<Guest, String> colName, colContact, colEmail, colAddress, colIdType, colIdNumber;
+    @FXML private TableColumn<Guest, String> colStatus; // ✅ status column
 
     private final ObservableList<Guest> guestList = FXCollections.observableArrayList();
 
     private String selectedGuestName;
 
+    // ================= INITIALIZE =================
     @FXML
     public void initialize() {
 
@@ -35,16 +37,16 @@ public class GuestController {
         colAddress.setCellValueFactory(data -> data.getValue().addressProperty());
         colIdType.setCellValueFactory(data -> data.getValue().idTypeProperty());
         colIdNumber.setCellValueFactory(data -> data.getValue().idNumberProperty());
+        colStatus.setCellValueFactory(data -> data.getValue().statusProperty()); // ✅ show status
 
         loadGuests();
 
-        // Table click
+        // TABLE CLICK
         guestTable.setOnMouseClicked(event -> {
 
             Guest selected = guestTable.getSelectionModel().getSelectedItem();
 
             if (selected != null) {
-
                 selectedGuestName = selected.getName();
 
                 nameField.setText(selected.getName());
@@ -57,12 +59,14 @@ public class GuestController {
         });
     }
 
+    // ================= LOAD =================
     private void loadGuests() {
 
         guestList.clear();
 
         try {
             Connection con = DBConnection.connect();
+
             String sql = "SELECT * FROM guests";
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -74,7 +78,8 @@ public class GuestController {
                         rs.getString("email"),
                         rs.getString("address"),
                         rs.getString("id_type"),
-                        rs.getString("id_number")
+                        rs.getString("id_number"),
+                        rs.getString("status") // ✅ include status
                 ));
             }
 
@@ -86,6 +91,7 @@ public class GuestController {
         }
     }
 
+    // ================= ADD =================
     @FXML
     private void addGuest() {
 
@@ -97,7 +103,7 @@ public class GuestController {
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "INSERT INTO guests(name, contact, email, address, id_type, id_number) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO guests(name, contact, email, address, id_type, id_number, status) VALUES(?,?,?,?,?,?, 'Active')";
             PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, nameField.getText());
@@ -119,90 +125,114 @@ public class GuestController {
             e.printStackTrace();
         }
     }
-
+    
     @FXML
-    private void deleteGuest() {
+private void editGuest() {
 
-        if (selectedGuestName == null) {
-            showError("Select a guest first");
-            return;
-        }
-
-        // Confirmation dialog
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Delete Guest");
-        confirm.setHeaderText("Are you sure?");
-        confirm.setContentText("This action cannot be undone.");
-
-        Optional<ButtonType> result = confirm.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-
-            try {
-                Connection con = DBConnection.connect();
-
-                String sql = "DELETE FROM guests WHERE name=?";
-                PreparedStatement pst = con.prepareStatement(sql);
-                pst.setString(1, selectedGuestName);
-
-                pst.executeUpdate();
-
-                showSuccess("Guest deleted successfully");
-
-                loadGuests();
-                clearFields();
-
-            } catch (Exception e) {
-                showError("Failed to delete guest");
-                e.printStackTrace();
-            }
-        }
+    if (selectedGuestName == null) {
+        showError("Select a guest first");
+        return;
     }
 
+    try {
+        Connection con = DBConnection.connect();
+
+        String sql = "UPDATE guests SET name=?, contact=?, email=?, address=?, id_type=?, id_number=? WHERE name=?";
+        PreparedStatement pst = con.prepareStatement(sql);
+
+        pst.setString(1, nameField.getText());
+        pst.setString(2, contactField.getText());
+        pst.setString(3, emailField.getText());
+        pst.setString(4, addressField.getText());
+        pst.setString(5, idTypeCombo.getValue());
+        pst.setString(6, idNumberField.getText());
+        pst.setString(7, selectedGuestName);
+
+        pst.executeUpdate();
+
+        showSuccess("Guest updated successfully");
+
+        loadGuests();
+        clearFields();
+
+    } catch (Exception e) {
+        showError("Failed to update guest");
+        e.printStackTrace();
+    }
+}
+
+@FXML
+private void deleteGuest() {
+
+    if (selectedGuestName == null) {
+        showError("Select a guest first");
+        return;
+    }
+
+    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+    confirm.setTitle("Delete Guest");
+    confirm.setHeaderText("Are you sure?");
+    confirm.setContentText("This action cannot be undone.");
+
+    Optional<ButtonType> result = confirm.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+
+        try {
+            Connection con = DBConnection.connect();
+
+            String sql = "DELETE FROM guests WHERE name=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, selectedGuestName);
+
+            pst.executeUpdate();
+
+            showSuccess("Guest deleted successfully");
+
+            loadGuests();
+            clearFields();
+
+        } catch (Exception e) {
+            showError("Failed to delete guest");
+            e.printStackTrace();
+        }
+    }
+}
+
+    // ================= ACTIVATE =================
     @FXML
-    private void editGuest() {
+    private void activateGuest() {
 
         if (selectedGuestName == null) {
-            showError("Select a guest first");
+            showError("Select guest first");
             return;
         }
 
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "UPDATE guests SET name=?, contact=?, email=?, address=?, id_type=?, id_number=? WHERE name=?";
+            String sql = "UPDATE guests SET status='Active' WHERE name=?";
             PreparedStatement pst = con.prepareStatement(sql);
 
-            pst.setString(1, nameField.getText());
-            pst.setString(2, contactField.getText());
-            pst.setString(3, emailField.getText());
-            pst.setString(4, addressField.getText());
-            pst.setString(5, idTypeCombo.getValue());
-            pst.setString(6, idNumberField.getText());
-            pst.setString(7, selectedGuestName);
+            pst.setString(1, selectedGuestName);
+            pst.executeUpdate();
 
-            int rowsUpdated = pst.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                showSuccess("Guest updated successfully");
-            } else {
-                showError("Update failed");
-            }
+            showSuccess("Guest Activated");
 
             loadGuests();
-            clearFields();
 
         } catch (Exception e) {
-            showError("Failed to update guest");
+            showError("Failed to activate guest");
             e.printStackTrace();
         }
     }
 
+    // ================= SEARCH =================
     @FXML
     private void searchGuest() {
 
         if (searchField.getText().isEmpty()) {
-            loadGuests(); // auto refresh
+            loadGuests();
             return;
         }
 
@@ -224,7 +254,8 @@ public class GuestController {
                         rs.getString("email"),
                         rs.getString("address"),
                         rs.getString("id_type"),
-                        rs.getString("id_number")
+                        rs.getString("id_number"),
+                        rs.getString("status")
                 ));
             }
 
@@ -236,6 +267,7 @@ public class GuestController {
         }
     }
 
+    // ================= HELPERS =================
     private void clearFields() {
         nameField.clear();
         contactField.clear();
@@ -246,21 +278,11 @@ public class GuestController {
         selectedGuestName = null;
     }
 
-    @FXML
-    private void viewHistory() {
-        System.out.println("View Guest History clicked");
-    }
-
-    // ✅ Helper Alerts
     private void showSuccess(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.show();
+        new Alert(Alert.AlertType.INFORMATION, message).show();
     }
 
     private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setContentText(message);
-        alert.show();
+        new Alert(Alert.AlertType.ERROR, message).show();
     }
 }

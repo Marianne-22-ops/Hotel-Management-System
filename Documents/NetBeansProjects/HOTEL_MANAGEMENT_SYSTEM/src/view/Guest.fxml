@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -43,16 +42,16 @@
                 <HBox spacing="10">
 
                     <Button text="Add Guest"
-                            onAction="#addGuest"
-                            />
+                            onAction="#addGuest"/>
 
                     <Button text="Edit Guest"
-                            onAction="#editGuest"
-                            />
+                            onAction="#editGuest"/>
 
                     <Button text="Delete Guest"
-                            onAction="#deleteGuest"
-                            />
+                            onAction="#deleteGuest"/>
+
+                    <Button text="Activate Guest"
+                            onAction="#activateGuest"/>
 
                 </HBox>
 
@@ -64,8 +63,7 @@
                                HBox.hgrow="ALWAYS"/>
 
                     <Button text="Search"
-                            onAction="#searchGuest"
-                            />
+                            onAction="#searchGuest"/>
 
                 </HBox>
 
@@ -85,6 +83,7 @@
                         <TableColumn fx:id="colAddress" text="Address" prefWidth="150"/>
                         <TableColumn fx:id="colIdType" text="ID Type" prefWidth="120"/>
                         <TableColumn fx:id="colIdNumber" text="ID No." prefWidth="120"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
 
                     </columns>
 

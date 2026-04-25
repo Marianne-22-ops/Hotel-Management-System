@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.ReportController"
             style="-fx-background-color: #1e293b;">
+
     <children>
 
-        <!-- MAIN CONTAINER -->
         <VBox spacing="20"
               AnchorPane.topAnchor="20"
               AnchorPane.leftAnchor="20"
@@ -20,47 +20,54 @@
             <Label text="Reports"
                    style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
 
-            <!-- SUMMARY BOX -->
+            <!-- FILTER -->
+            <HBox spacing="10">
+                <ComboBox fx:id="reportTypeCombo" promptText="Select Report Type"/>
+                <Button text="Generate Report" onAction="#generateReport"/>
+                <Button text="Export CSV" onAction="#exportReport"/>
+                <Button text="Print" onAction="#printReport"/>
+            </HBox>
+
+            <!-- SUMMARY -->
             <VBox spacing="10"
-                  style="-fx-border-color:#cbd5e1; -fx-border-radius:12; -fx-padding:15; -fx-background-color:rgba(255,255,255,0.7);">
+                  style="-fx-padding:15; -fx-background-color:white; -fx-background-radius:10;">
 
-                <Label text="System Summary"
-                       style="-fx-font-weight:bold;"/>
+                <Label text="System Summary" style="-fx-font-weight:bold;"/>
 
-                <Label text="Total Guests: 120"/>
-                <Label text="Occupied Rooms: 85"/>
-                <Label text="Available Rooms: 35"/>
-                <Label text="Total Revenue: 5000"/>
+                <Label fx:id="totalGuestsLabel"/>
+                <Label fx:id="occupiedRoomsLabel"/>
+                <Label fx:id="availableRoomsLabel"/>
+                <Label fx:id="totalRevenueLabel"/>
 
             </VBox>
 
-            <!-- DAILY ACTIVITY BOX -->
+            <!-- TODAY -->
             <VBox spacing="10"
-                  style="-fx-border-color:#cbd5e1; -fx-border-radius:12; -fx-padding:15; -fx-background-color:rgba(255,255,255,0.7);">
+                  style="-fx-padding:15; -fx-background-color:white; -fx-background-radius:10;">
 
-                <Label text="Today's Activity"
-                       style="-fx-font-weight:bold;"/>
+                <Label text="Today's Activity" style="-fx-font-weight:bold;"/>
 
-                <Label text="New Check-ins: 10"/>
-                <Label text="Check-outs: 7"/>
-                <Label text="New Reservations: 5"/>
+                <Label fx:id="checkInLabel"/>
+                <Label fx:id="checkOutLabel"/>
+                <Label fx:id="reservationLabel"/>
 
             </VBox>
 
-            <!-- TABLE BOX -->
+            <!-- TABLE -->
             <VBox VBox.vgrow="ALWAYS"
-                  style="-fx-border-color:#cbd5e1; -fx-border-radius:12; -fx-padding:15; -fx-background-color:rgba(255,255,255,0.7);">
+                  style="-fx-padding:15; -fx-background-color:white; -fx-background-radius:10;">
 
-                <Label text="Recent Transactions"
-                       style="-fx-font-weight:bold;"/>
+                <Label text="Recent Transactions" style="-fx-font-weight:bold;"/>
 
-                <TableView VBox.vgrow="ALWAYS">
+                <TableView fx:id="reportTable" VBox.vgrow="ALWAYS">
+
                     <columns>
-                        <TableColumn text="Guest"/>
-                        <TableColumn text="Room"/>
-                        <TableColumn text="Amount"/>
-                        <TableColumn text="Date"/>
+                        <TableColumn fx:id="colGuest" text="Guest"/>
+                        <TableColumn fx:id="colRoom" text="Room"/>
+                        <TableColumn fx:id="colAmount" text="Amount"/>
+                        <TableColumn fx:id="colDate" text="Date"/>
                     </columns>
+
                 </TableView>
 
             </VBox>
@@ -69,6 +76,3 @@
 
     </children>
 </AnchorPane>
-
-<!-- test change -->
-<!-- test change -->

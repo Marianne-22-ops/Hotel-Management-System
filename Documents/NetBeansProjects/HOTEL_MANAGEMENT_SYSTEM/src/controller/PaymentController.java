@@ -20,13 +20,13 @@ public class PaymentController {
 
     private final ObservableList<Payment> paymentList = FXCollections.observableArrayList();
 
+    private int selectedReservationId; // ⭐ IMPORTANT
+
     // ================= INITIALIZE =================
     @FXML
     public void initialize() {
 
-        methodCombo.getItems().addAll(
-                "Cash", "GCash", "Credit Card", "Bank Transfer"
-        );
+        methodCombo.getItems().addAll("Cash", "GCash", "Credit Card", "Bank Transfer");
 
         colGuest.setCellValueFactory(data -> data.getValue().guestProperty());
         colRoom.setCellValueFactory(data -> data.getValue().roomProperty());
@@ -38,7 +38,6 @@ public class PaymentController {
         loadGuests();
         loadPayments();
 
-        // 🔥 AUTO FILL WHEN GUEST IS SELECTED
         guestCombo.setOnAction(e -> {
             if (guestCombo.getValue() != null) {
                 autoFillDetails(guestCombo.getValue());
@@ -54,11 +53,13 @@ public class PaymentController {
 
             Connection con = DBConnection.connect();
 
-            // ONLY unpaid reservations
-            String sql = "SELECT DISTINCT guest FROM reservations WHERE status IS NULL OR status != 'Paid'";
+            // ✅ ONLY reservations that are NOT yet paid
+            String sql = "SELECT DISTINCT r.guest FROM reservations r " +
+             "LEFT JOIN payments p ON r.id = p.reservation_id " +
+             "WHERE p.reservation_id IS NULL " +
+             "AND r.status IN ('Reserved','Checked-in')";
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = con.prepareStatement(sql).executeQuery();
 
             while (rs.next()) {
                 guestCombo.getItems().add(rs.getString("guest"));
@@ -76,8 +77,7 @@ public class PaymentController {
             Connection con = DBConnection.connect();
 
             String sql = "SELECT * FROM payments ORDER BY payment_date DESC";
-            PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = con.prepareStatement(sql).executeQuery();
 
             while (rs.next()) {
                 paymentList.add(new Payment(
@@ -100,62 +100,70 @@ public class PaymentController {
     // ================= AUTO COMPUTE =================
 
     private void autoFillDetails(String guestName) {
-        try {
-            Connection con = DBConnection.connect();
+    try {
+        Connection con = DBConnection.connect();
 
-            String sql = "SELECT r.room, r.check_in, r.check_out, rm.price " +
-                         "FROM reservations r " +
-                         "JOIN rooms rm ON r.room = rm.room_no " +
-                         "WHERE r.guest = ? AND (r.status IS NULL OR r.status != 'Paid') " +
-                         "ORDER BY r.check_in DESC LIMIT 1";
+        String sql = "SELECT r.id, r.room, r.check_in, r.check_out, rm.price " +
+                "FROM reservations r " +
+                "JOIN rooms rm ON r.room = rm.room_no " +
+                "LEFT JOIN payments p ON r.id = p.reservation_id " +
+                "WHERE r.guest = ? " +
+                "AND p.reservation_id IS NULL " +
+                "AND r.status IN ('Reserved','Checked-in') " +
+                "ORDER BY r.check_in DESC LIMIT 1";
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, guestName);
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, guestName);
 
-            ResultSet rs = pst.executeQuery();
+        ResultSet rs = pst.executeQuery();
 
-            if (rs.next()) {
+        if (rs.next()) {
 
-                String room = rs.getString("room");
-                LocalDate checkIn = rs.getDate("check_in").toLocalDate();
-                LocalDate checkOut = rs.getDate("check_out").toLocalDate();
-                double price = rs.getDouble("price");
+            selectedReservationId = rs.getInt("id");
 
-                // 👉 SET ROOM
-                roomField.setText(room);
+            String room = rs.getString("room");
+            LocalDate checkIn = rs.getDate("check_in").toLocalDate();
+            LocalDate checkOut = rs.getDate("check_out").toLocalDate();
+            double price = rs.getDouble("price");
 
-                // 👉 COMPUTE DAYS
-                long days = ChronoUnit.DAYS.between(checkIn, checkOut);
-                if (days <= 0) days = 1;
+            // ✅ AUTO SET ROOM
+            roomField.setText(room);
 
-                // 👉 COMPUTE TOTAL
-                double total = days * price;
+            // ✅ COMPUTE DAYS
+            long days = ChronoUnit.DAYS.between(checkIn, checkOut);
+            if (days <= 0) days = 1;
 
-                // 👉 DISPLAY
-                amountField.setText(String.format("%.2f", total));
-            }
+            // ✅ COMPUTE TOTAL
+            double total = days * price;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            // ✅ DISPLAY AMOUNT
+            amountField.setText(String.format("%.2f", total));
+
+        } else {
+            // 🔥 DEBUG (important)
+            roomField.clear();
+            amountField.clear();
+            selectedReservationId = 0;
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     // ================= VALIDATION =================
 
-    private boolean isAlreadyPaid(String guest, String room) {
+    private boolean isAlreadyPaid(int reservationId) {
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "SELECT COUNT(*) FROM payments WHERE guest=? AND room=?";
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, guest);
-            pst.setString(2, room);
+            PreparedStatement pst = con.prepareStatement(
+                    "SELECT 1 FROM payments WHERE reservation_id=?"
+            );
 
-            ResultSet rs = pst.executeQuery();
+            pst.setInt(1, reservationId);
 
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
+            return pst.executeQuery().next();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,16 +177,15 @@ public class PaymentController {
     private void recordPayment() {
 
         if (guestCombo.getValue() == null ||
-            roomField.getText().isEmpty() ||
-            amountField.getText().isEmpty() ||
-            methodCombo.getValue() == null) {
+                roomField.getText().isEmpty() ||
+                amountField.getText().isEmpty() ||
+                methodCombo.getValue() == null) {
 
             showAlert("Complete all fields!");
             return;
         }
 
-        // 🔥 PREVENT DOUBLE PAYMENT
-        if (isAlreadyPaid(guestCombo.getValue(), roomField.getText())) {
+        if (isAlreadyPaid(selectedReservationId)) {
             showAlert("This reservation is already PAID!");
             return;
         }
@@ -186,30 +193,22 @@ public class PaymentController {
         try {
             Connection con = DBConnection.connect();
 
-            // INSERT PAYMENT
-            String sql = "INSERT INTO payments (guest, room, amount, method, reference_no) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO payments (reservation_id, guest, room, amount, method, reference_no) VALUES (?,?,?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(sql);
 
-            pst.setString(1, guestCombo.getValue());
-            pst.setString(2, roomField.getText());
-            pst.setDouble(3, Double.parseDouble(amountField.getText()));
-            pst.setString(4, methodCombo.getValue());
-            pst.setString(5, referenceField.getText());
+            pst.setInt(1, selectedReservationId);
+            pst.setString(2, guestCombo.getValue());
+            pst.setString(3, roomField.getText());
+            pst.setDouble(4, Double.parseDouble(amountField.getText()));
+            pst.setString(5, methodCombo.getValue());
+            pst.setString(6, referenceField.getText());
 
             pst.executeUpdate();
-
-            // 🔥 UPDATE RESERVATION STATUS → PAID
-            PreparedStatement update = con.prepareStatement(
-                    "UPDATE reservations SET status='Paid' WHERE guest=? AND room=?"
-            );
-            update.setString(1, guestCombo.getValue());
-            update.setString(2, roomField.getText());
-            update.executeUpdate();
 
             showAlert("Payment Recorded Successfully!");
 
             loadPayments();
-            loadGuests(); // refresh dropdown
+            loadGuests();
             clearFields();
 
         } catch (Exception e) {
@@ -262,6 +261,7 @@ public class PaymentController {
         amountField.clear();
         methodCombo.setValue(null);
         referenceField.clear();
+        selectedReservationId = 0;
     }
 
     private void showAlert(String msg) {

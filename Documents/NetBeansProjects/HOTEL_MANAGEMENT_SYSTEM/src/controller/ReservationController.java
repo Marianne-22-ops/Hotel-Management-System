@@ -20,7 +20,6 @@ public class ReservationController {
     @FXML private TableView<Reservation> reservationTable;
     @FXML private TableColumn<Reservation, String> colGuest, colRoom, colCheckIn, colCheckOut, colStatus;
 
-    // 📜 HISTORY TABLE
     @FXML private TableView<Reservation> historyTable;
     @FXML private TableColumn<Reservation, String> colHistoryGuest, colAction, colDate;
 
@@ -29,28 +28,22 @@ public class ReservationController {
 
     private String selectedGuest;
     private String selectedRoom;
+    private int selectedReservationId;
 
     @FXML
     public void initialize() {
-        
-         reservationTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-         historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        statusCombo.getItems().addAll(
-                "Reserved",
-                "Checked-in",
-                "Checked-out",
-                "Cancelled"
-        );
+        reservationTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // MAIN TABLE
+        statusCombo.getItems().addAll("Reserved", "Checked-in", "Checked-out", "Cancelled");
+
         colGuest.setCellValueFactory(data -> data.getValue().guestProperty());
         colRoom.setCellValueFactory(data -> data.getValue().roomProperty());
         colCheckIn.setCellValueFactory(data -> data.getValue().checkInProperty());
         colCheckOut.setCellValueFactory(data -> data.getValue().checkOutProperty());
         colStatus.setCellValueFactory(data -> data.getValue().statusProperty());
 
-        // HISTORY TABLE
         colHistoryGuest.setCellValueFactory(data -> data.getValue().guestProperty());
         colAction.setCellValueFactory(data -> data.getValue().statusProperty());
         colDate.setCellValueFactory(data -> data.getValue().checkInProperty());
@@ -65,6 +58,7 @@ public class ReservationController {
             Reservation selected = reservationTable.getSelectionModel().getSelectedItem();
 
             if (selected != null) {
+                selectedReservationId = selected.getId();
                 selectedGuest = selected.getGuest();
                 selectedRoom = selected.getRoom();
 
@@ -82,10 +76,15 @@ public class ReservationController {
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "UPDATE reservations SET status='Checked-out' " +
-                    "WHERE check_out < CURDATE() AND status='Checked-in'";
+            String selectSql = "SELECT room FROM reservations WHERE check_out < CURDATE() AND status='Checked-in'";
+            ResultSet rs = con.prepareStatement(selectSql).executeQuery();
 
-            PreparedStatement pst = con.prepareStatement(sql);
+            while (rs.next()) {
+                updateRoomStatus(rs.getString("room"), "Available");
+            }
+
+            String updateSql = "UPDATE reservations SET status='Checked-out' WHERE check_out < CURDATE() AND status='Checked-in'";
+            PreparedStatement pst = con.prepareStatement(updateSql);
             pst.executeUpdate();
 
         } catch (Exception e) {
@@ -100,8 +99,8 @@ public class ReservationController {
             guestCombo.getItems().clear();
             Connection con = DBConnection.connect();
 
-            String sql = "SELECT name FROM guests WHERE name NOT IN " +
-                    "(SELECT guest FROM reservations WHERE status='Checked-in')";
+            String sql = "SELECT name FROM guests WHERE status='Active' AND name NOT IN " +
+        "(SELECT guest FROM reservations WHERE status IN ('Reserved','Checked-in'))";
 
             ResultSet rs = con.prepareStatement(sql).executeQuery();
 
@@ -123,9 +122,7 @@ public class ReservationController {
             ResultSet rs = con.prepareStatement(sql).executeQuery();
 
             while (rs.next()) {
-                roomCombo.getItems().add(
-                        rs.getString("room_no") + " - " + rs.getString("type")
-                );
+                roomCombo.getItems().add(rs.getString("room_no") + " - " + rs.getString("type"));
             }
 
         } catch (Exception e) {
@@ -142,6 +139,7 @@ public class ReservationController {
 
             while (rs.next()) {
                 reservationList.add(new Reservation(
+                        rs.getInt("id"),
                         rs.getString("guest"),
                         rs.getString("room"),
                         rs.getString("check_in"),
@@ -183,47 +181,6 @@ public class ReservationController {
         }
     }
 
-    // ================= LOGIC =================
-
-    private boolean isRoomAvailable(String room, String in, String out) {
-        try {
-            Connection con = DBConnection.connect();
-
-            String sql =
-                    "SELECT * FROM reservations WHERE room=? " +
-                            "AND status IN ('Reserved','Checked-in') " +
-                            "AND (check_in <= ? AND check_out >= ?)";
-
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, room);
-            pst.setString(2, out);
-            pst.setString(3, in);
-
-            return !pst.executeQuery().next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private void logHistory(String guest, String action) {
-        try {
-            Connection con = DBConnection.connect();
-
-            PreparedStatement pst = con.prepareStatement(
-                    "INSERT INTO reservation_history(guest, action) VALUES(?,?)"
-            );
-
-            pst.setString(1, guest);
-            pst.setString(2, action);
-            pst.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     // ================= CRUD =================
 
     @FXML
@@ -233,14 +190,6 @@ public class ReservationController {
 
         try {
             String room = roomCombo.getValue().split(" - ")[0];
-
-            if (!isRoomAvailable(room,
-                    checkInDate.getValue().toString(),
-                    checkOutDate.getValue().toString())) {
-
-                showAlert("Room already booked!");
-                return;
-            }
 
             Connection con = DBConnection.connect();
 
@@ -266,11 +215,10 @@ public class ReservationController {
         }
     }
 
-    // ✅ NEW UPDATE FUNCTION
     @FXML
     private void updateReservation() {
 
-        if (selectedGuest == null || selectedRoom == null) {
+        if (selectedReservationId == 0) {
             showAlert("Select reservation first!");
             return;
         }
@@ -279,23 +227,37 @@ public class ReservationController {
             Connection con = DBConnection.connect();
 
             String room = roomCombo.getValue().split(" - ")[0];
+            String newStatus = statusCombo.getValue();
 
             PreparedStatement pst = con.prepareStatement(
-                    "UPDATE reservations SET guest=?, room=?, check_in=?, check_out=?, status=? WHERE guest=? AND room=?"
+                    "UPDATE reservations SET guest=?, room=?, check_in=?, check_out=?, status=? WHERE id=?"
             );
 
             pst.setString(1, guestCombo.getValue());
             pst.setString(2, room);
             pst.setString(3, checkInDate.getValue().toString());
             pst.setString(4, checkOutDate.getValue().toString());
-            pst.setString(5, statusCombo.getValue());
-
-            pst.setString(6, selectedGuest);
-            pst.setString(7, selectedRoom);
+            pst.setString(5, newStatus);
+            pst.setInt(6, selectedReservationId);
 
             pst.executeUpdate();
 
-            logHistory(guestCombo.getValue(), "Updated");
+            if (newStatus.equals("Checked-out") || newStatus.equals("Cancelled")) {
+
+    updateRoomStatus(room, "Available");
+
+    // ⭐ ADD THIS
+    PreparedStatement pst2 = con.prepareStatement(
+            "UPDATE guests SET status='Inactive' WHERE name=?"
+    );
+    pst2.setString(1, guestCombo.getValue());
+    pst2.executeUpdate();
+
+} else {
+    updateRoomStatus(room, "Occupied");
+}
+
+            logHistory(guestCombo.getValue(), "Updated (" + newStatus + ")");
             refreshAll();
 
         } catch (Exception e) {
@@ -306,7 +268,7 @@ public class ReservationController {
     @FXML
     private void cancelReservation() {
 
-        if (selectedGuest == null || selectedRoom == null) {
+        if (selectedReservationId == 0) {
             showAlert("Select reservation first!");
             return;
         }
@@ -315,11 +277,10 @@ public class ReservationController {
             Connection con = DBConnection.connect();
 
             PreparedStatement pst = con.prepareStatement(
-                    "DELETE FROM reservations WHERE guest=? AND room=?"
+                    "DELETE FROM reservations WHERE id=?"
             );
 
-            pst.setString(1, selectedGuest);
-            pst.setString(2, selectedRoom);
+            pst.setInt(1, selectedReservationId);
             pst.executeUpdate();
 
             updateRoomStatus(selectedRoom, "Available");
@@ -355,6 +316,7 @@ public class ReservationController {
 
             while (rs.next()) {
                 filtered.add(new Reservation(
+                        rs.getInt("id"),
                         rs.getString("guest"),
                         rs.getString("room"),
                         rs.getString("check_in"),
@@ -419,6 +381,24 @@ public class ReservationController {
 
         selectedGuest = null;
         selectedRoom = null;
+        selectedReservationId = 0; // ⭐ important
+    }
+
+    private void logHistory(String guest, String action) {
+        try {
+            Connection con = DBConnection.connect();
+
+            PreparedStatement pst = con.prepareStatement(
+                    "INSERT INTO reservation_history(guest, action) VALUES(?,?)"
+            );
+
+            pst.setString(1, guest);
+            pst.setString(2, action);
+            pst.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showAlert(String msg) {

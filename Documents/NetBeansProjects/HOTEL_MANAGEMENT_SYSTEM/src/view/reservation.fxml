@@ -50,15 +50,15 @@
 
                     <Button text="Create"
                             onAction="#createReservation"
-                            style="-fx-background-color:#22c55e; -fx-text-fill:white;"/>
+                            />
 
                     <Button text="Update"
                             onAction="#updateReservation"
-                            style="-fx-background-color:#3b82f6; -fx-text-fill:white;"/>
+                            />
 
-                    <Button text="Cancel"
+                    <Button text="Delete"
                             onAction="#cancelReservation"
-                            style="-fx-background-color:#ef4444; -fx-text-fill:white;"/>
+                            />
 
                     <TextField fx:id="searchField"
                                promptText="Search Guest..."
