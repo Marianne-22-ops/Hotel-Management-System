@@ -73,26 +73,29 @@ private void handleRooms() {
     }
 
 
-    private void loadPage(String page) {
+   private void loadPage(String page) {
 
-        try {
+    try {
 
-            Parent root = FXMLLoader.load(getClass().getResource(page));
+        System.out.println("Loading: " + page);
 
-            workspacePane.getChildren().setAll(root);
+        Parent root = FXMLLoader.load(getClass().getResource(page));
 
-            AnchorPane.setTopAnchor(root, 0.0);
-            AnchorPane.setBottomAnchor(root, 0.0);
-            AnchorPane.setLeftAnchor(root, 0.0);
-            AnchorPane.setRightAnchor(root, 0.0);
+        System.out.println("LOADED SUCCESSFULLY");
 
-        } 
+        workspacePane.getChildren().setAll(root);
 
-            catch (IOException e) {
-}
+        AnchorPane.setTopAnchor(root, 0.0);
+        AnchorPane.setBottomAnchor(root, 0.0);
+        AnchorPane.setLeftAnchor(root, 0.0);
+        AnchorPane.setRightAnchor(root, 0.0);
 
-        
+    } catch (Exception e) {
+
+        e.printStackTrace(); // 🔥 THIS IS THE FIX
 
     }
+
+}
 
 }

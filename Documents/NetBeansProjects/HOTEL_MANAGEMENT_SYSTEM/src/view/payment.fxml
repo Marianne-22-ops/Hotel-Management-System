@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
-            style="-fx-background-color:#1e293b
-;">
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.PaymentController"
+            style="-fx-background-color:#1e293b;">
 
     <children>
 
-        <!-- MAIN CONTAINER -->
         <VBox spacing="20"
               AnchorPane.topAnchor="20"
               AnchorPane.leftAnchor="20"
@@ -21,44 +20,81 @@
             <Label text="Payments"
                    style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
 
-            <!-- FORM BOX -->
+            <!-- FORM -->
             <VBox spacing="10"
-                  style="
-                    -fx-border-color:#cbd5e1;
-                    -fx-border-radius:12;
-                    -fx-background-radius:12;
-                    -fx-padding:15;
-                    -fx-background-color:rgba(255,255,255,0.7);
-                  ">
+                  style="-fx-border-color:#cbd5e1;
+                         -fx-border-radius:12;
+                         -fx-background-radius:12;
+                         -fx-padding:15;
+                         -fx-background-color:rgba(255,255,255,0.7);">
 
                 <HBox spacing="10">
-                    <TextField promptText="Guest Name" HBox.hgrow="ALWAYS"/>
-                    <TextField promptText="Amount"/>
-                    <ComboBox promptText="Payment Method"/>
 
-                    <Button text="Pay"
-                            style="-fx-background-color:#22c55e; -fx-text-fill:white; -fx-background-radius:8;"/>
+                    <!-- ✅ GUEST -->
+                    <ComboBox fx:id="guestCombo"
+                              promptText="Select Guest"
+                              HBox.hgrow="ALWAYS"/>
+
+                    <!-- ✅ FIXED: ROOM FIELD (AUTO) -->
+                    <TextField fx:id="roomField"
+                               promptText="Room"
+                               editable="false"/>
+
+                    <!-- ✅ AMOUNT AUTO -->
+                    <TextField fx:id="amountField"
+                               promptText="Auto Amount"
+                               editable="false"/>
+
+                    <!-- ✅ METHOD -->
+                    <ComboBox fx:id="methodCombo"
+                              promptText="Payment Method"/>
+
+                </HBox>
+
+                <HBox spacing="10">
+
+                    <TextField fx:id="referenceField"
+                               promptText="Reference No (optional)"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="searchField"
+                               promptText="Search Guest..."
+                               HBox.hgrow="ALWAYS"/>
+
+                    <Button text="Record Payment"
+                            onAction="#recordPayment"
+                            style="-fx-background-color:#22c55e; -fx-text-fill:white;"/>
+
+                    <Button text="Search"
+                            onAction="#searchPayment"/>
+
                 </HBox>
 
             </VBox>
 
-            <!-- TABLE BOX -->
+            <!-- TABLE -->
             <VBox VBox.vgrow="ALWAYS"
-                  style="
-                    -fx-border-color:#cbd5e1;
-                    -fx-border-radius:12;
-                    -fx-background-radius:12;
-                    -fx-padding:15;
-                    -fx-background-color:rgba(255,255,255,0.7);
-                  ">
+                  style="-fx-border-color:#cbd5e1;
+                         -fx-border-radius:12;
+                         -fx-background-radius:12;
+                         -fx-padding:15;
+                         -fx-background-color:rgba(255,255,255,0.7);">
 
-                <TableView VBox.vgrow="ALWAYS">
+                <Label text="Payment History"
+                       style="-fx-font-weight:bold;"/>
+
+                <TableView fx:id="paymentTable"
+                           VBox.vgrow="ALWAYS">
+
                     <columns>
-                        <TableColumn text="Guest"/>
-                        <TableColumn text="Amount"/>
-                        <TableColumn text="Method"/>
-                        <TableColumn text="Date"/>
+                        <TableColumn fx:id="colGuest" text="Guest" prefWidth="150"/>
+                        <TableColumn fx:id="colRoom" text="Room" prefWidth="100"/>
+                        <TableColumn fx:id="colAmount" text="Amount" prefWidth="120"/>
+                        <TableColumn fx:id="colMethod" text="Method" prefWidth="120"/>
+                        <TableColumn fx:id="colReference" text="Reference" prefWidth="150"/>
+                        <TableColumn fx:id="colDate" text="Date" prefWidth="180"/>
                     </columns>
+
                 </TableView>
 
             </VBox>
@@ -67,6 +103,3 @@
 
     </children>
 </AnchorPane>
-
-<!-- test change -->
-<!-- test change -->

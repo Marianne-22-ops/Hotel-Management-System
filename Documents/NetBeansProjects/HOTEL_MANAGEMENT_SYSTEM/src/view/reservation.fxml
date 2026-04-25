@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.ReservationController"
             style="-fx-background-color:#1e293b;">
 
     <children>
 
-        <!-- MAIN CONTAINER -->
         <VBox spacing="20"
               AnchorPane.topAnchor="20"
               AnchorPane.leftAnchor="20"
@@ -20,45 +20,105 @@
             <Label text="Reservations"
                    style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
 
-            <!-- FORM BOX -->
+            <!-- FORM -->
             <VBox spacing="10"
-                  style="
-                    -fx-border-color:#cbd5e1;
-                    -fx-border-radius:12;
-                    -fx-background-radius:12;
-                    -fx-padding:15;
-                    -fx-background-color:rgba(255,255,255,0.7);
-                  ">
+                  style="-fx-border-color:#cbd5e1;
+                         -fx-border-radius:12;
+                         -fx-background-radius:12;
+                         -fx-padding:15;
+                         -fx-background-color:rgba(255,255,255,0.7);">
 
                 <HBox spacing="10">
-                    <TextField promptText="Guest Name" HBox.hgrow="ALWAYS"/>
-                    <TextField promptText="Room No"/>
-                    <DatePicker promptText="Check-In"/>
-                    <DatePicker promptText="Check-Out"/>
 
-                    <Button text="Book"
-                            style="-fx-background-color:#f59e0b; -fx-text-fill:white; -fx-background-radius:8;"/>
+                    <ComboBox fx:id="guestCombo"
+                              promptText="Select Guest"
+                              HBox.hgrow="ALWAYS"/>
+
+                    <ComboBox fx:id="roomCombo"
+                              promptText="Select Room"/>
+
+                    <DatePicker fx:id="checkInDate"/>
+                    <DatePicker fx:id="checkOutDate"/>
+
+                    <ComboBox fx:id="statusCombo"
+                              promptText="Status"/>
+
+                </HBox>
+
+                <!-- BUTTONS -->
+                <HBox spacing="10">
+
+                    <Button text="Create"
+                            onAction="#createReservation"
+                            style="-fx-background-color:#22c55e; -fx-text-fill:white;"/>
+
+                    <Button text="Update"
+                            onAction="#updateReservation"
+                            style="-fx-background-color:#3b82f6; -fx-text-fill:white;"/>
+
+                    <Button text="Cancel"
+                            onAction="#cancelReservation"
+                            style="-fx-background-color:#ef4444; -fx-text-fill:white;"/>
+
+                    <TextField fx:id="searchField"
+                               promptText="Search Guest..."
+                               HBox.hgrow="ALWAYS"/>
+
+                    <Button text="Search"
+                            onAction="#searchReservation"/>
+
                 </HBox>
 
             </VBox>
 
-            <!-- TABLE BOX -->
+            <!-- RESERVATION TABLE -->
             <VBox VBox.vgrow="ALWAYS"
-                  style="
-                    -fx-border-color:#cbd5e1;
-                    -fx-border-radius:12;
-                    -fx-background-radius:12;
-                    -fx-padding:15;
-                    -fx-background-color:rgba(255,255,255,0.7);
-                  ">
+                  style="-fx-border-color:#cbd5e1;
+                         -fx-border-radius:12;
+                         -fx-background-radius:12;
+                         -fx-padding:15;
+                         -fx-background-color:rgba(255,255,255,0.7);">
 
-                <TableView VBox.vgrow="ALWAYS">
+                <Label text="Reservations"
+                       style="-fx-font-weight:bold;"/>
+
+                <TableView fx:id="reservationTable"
+           VBox.vgrow="ALWAYS"
+           style="-fx-font-size:13px;">
+
                     <columns>
-                        <TableColumn text="Guest"/>
-                        <TableColumn text="Room"/>
-                        <TableColumn text="Check-In"/>
-                        <TableColumn text="Check-Out"/>
+                        <TableColumn fx:id="colGuest" text="Guest" prefWidth="200"/>
+                        <TableColumn fx:id="colRoom" text="Room" prefWidth="150"/>
+                        <TableColumn fx:id="colCheckIn" text="Check-In" prefWidth="180"/>
+                        <TableColumn fx:id="colCheckOut" text="Check-Out" prefWidth="180"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="150"/>
                     </columns>
+
+                </TableView>
+
+            </VBox>
+
+            <!-- 📜 HISTORY TABLE -->
+            <VBox VBox.vgrow="ALWAYS"
+                  style="-fx-border-color:#cbd5e1;
+                         -fx-border-radius:12;
+                         -fx-background-radius:12;
+                         -fx-padding:15;
+                         -fx-background-color:rgba(255,255,255,0.7);">
+
+                <Label text="Reservation History"
+                       style="-fx-font-weight:bold;"/>
+
+                <TableView fx:id="historyTable"
+           VBox.vgrow="ALWAYS"
+           style="-fx-font-size:13px;">
+
+                    <columns>
+                        <TableColumn fx:id="colHistoryGuest" text="Guest" prefWidth="220"/>
+                        <TableColumn fx:id="colAction" text="Action" prefWidth="220"/>
+                        <TableColumn fx:id="colDate" text="Date &amp; Time" prefWidth="300"/>
+                    </columns>
+
                 </TableView>
 
             </VBox>
@@ -67,6 +127,3 @@
 
     </children>
 </AnchorPane>
-
-<!-- test change -->
-<!-- test change -->

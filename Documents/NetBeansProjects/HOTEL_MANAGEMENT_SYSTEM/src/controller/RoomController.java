@@ -4,6 +4,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -19,330 +20,271 @@ import database.DBConnection;
 
 public class RoomController implements Initializable {
 
-    @FXML
-    private TextField roomNoField;
+    @FXML private TextField roomNoField;
+    @FXML private ComboBox<String> typeCombo;
+    @FXML private TextField priceField;
+    @FXML private ComboBox<String> statusCombo;
+    @FXML private TextField searchField;
 
-    @FXML
-    private ComboBox<String> typeCombo;
+    @FXML private TableView<Room> roomTable;
+    @FXML private TableColumn<Room, String> colRoomNo;
+    @FXML private TableColumn<Room, String> colType;
+    @FXML private TableColumn<Room, String> colPrice;
+    @FXML private TableColumn<Room, String> colStatus;
 
-    @FXML
-    private TextField priceField;
+    private ObservableList<Room> roomList = FXCollections.observableArrayList();
 
-    @FXML
-    private ComboBox<String> statusCombo;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private TableView<Room> roomTable;
-
-    @FXML
-    private TableColumn<Room, String> colRoomNo;
-
-    @FXML
-    private TableColumn<Room, String> colType;
-
-    @FXML
-    private TableColumn<Room, String> colPrice;
-
-    @FXML
-    private TableColumn<Room, String> colStatus;
-
-
-    private ObservableList<Room> roomList =
-            FXCollections.observableArrayList();
-
+    // 🔥 store selected room
+    private String selectedRoomNo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        typeCombo.getItems().addAll(
-                "Single",
-                "Double",
-                "Suite",
-                "Deluxe"
-        );
+        typeCombo.getItems().addAll("Single", "Double", "Suite", "Deluxe");
 
-        statusCombo.getItems().addAll(
-                "Available",
-                "Occupied",
-                "Maintenance",
-                "Reserved"
-        );
+        statusCombo.getItems().addAll("Available", "Occupied", "Maintenance", "Reserved");
 
-        colRoomNo.setCellValueFactory(data ->
-                data.getValue().roomNoProperty());
-
-        colType.setCellValueFactory(data ->
-                data.getValue().typeProperty());
-
-        colPrice.setCellValueFactory(data ->
-                data.getValue().priceProperty());
-
-        colStatus.setCellValueFactory(data ->
-                data.getValue().statusProperty());
+        colRoomNo.setCellValueFactory(data -> data.getValue().roomNoProperty());
+        colType.setCellValueFactory(data -> data.getValue().typeProperty());
+        colPrice.setCellValueFactory(data -> data.getValue().priceProperty());
+        colStatus.setCellValueFactory(data -> data.getValue().statusProperty());
 
         loadRooms();
 
+        // table click
         roomTable.setOnMouseClicked(event -> {
 
-            Room selected = roomTable
-                    .getSelectionModel()
-                    .getSelectedItem();
+            Room selected = roomTable.getSelectionModel().getSelectedItem();
 
             if (selected != null) {
+
+                selectedRoomNo = selected.getRoomNo();
 
                 roomNoField.setText(selected.getRoomNo());
                 typeCombo.setValue(selected.getType());
                 priceField.setText(selected.getPrice());
                 statusCombo.setValue(selected.getStatus());
-
             }
-
         });
-
     }
-
 
     private void loadRooms() {
 
         roomList.clear();
 
         try {
-
             Connection conn = DBConnection.connect();
 
             String sql = "SELECT * FROM rooms";
-
-            PreparedStatement pst =
-                    conn.prepareStatement(sql);
-
+            PreparedStatement pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-
                 roomList.add(new Room(
-
                         rs.getString("room_no"),
                         rs.getString("type"),
                         rs.getString("price"),
                         rs.getString("status")
-
                 ));
-
             }
 
             roomTable.setItems(roomList);
 
         } catch (Exception e) {
-
+            showError("Error loading rooms");
             e.printStackTrace();
-
         }
-
     }
-
 
     @FXML
     private void addRoom() {
 
-        try {
+        if (roomNoField.getText().isEmpty()) {
+            showError("Room number is required");
+            return;
+        }
 
+        try {
             Connection conn = DBConnection.connect();
 
-            String sql =
-                    "INSERT INTO rooms VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO rooms VALUES (?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
 
-            PreparedStatement pst =
-                    conn.prepareStatement(sql);
-
-            pst.setString(1,
-                    roomNoField.getText());
-
-            pst.setString(2,
-                    typeCombo.getValue());
-
-            pst.setString(3,
-                    priceField.getText());
-
-            pst.setString(4,
-                    statusCombo.getValue());
+            pst.setString(1, roomNoField.getText());
+            pst.setString(2, typeCombo.getValue());
+            pst.setString(3, priceField.getText());
+            pst.setString(4, statusCombo.getValue());
 
             pst.executeUpdate();
 
-            loadRooms();
+            showSuccess("Room added successfully");
 
+            loadRooms();
             clearFields();
 
         } catch (Exception e) {
-
+            showError("Failed to add room");
             e.printStackTrace();
-
         }
-
     }
-
 
     @FXML
     private void updateRoom() {
 
-        try {
+        if (selectedRoomNo == null) {
+            showError("Select a room first");
+            return;
+        }
 
+        try {
             Connection conn = DBConnection.connect();
 
-            String sql =
-                    "UPDATE rooms SET type=?, price=?, status=? WHERE room_no=?";
+            String sql = "UPDATE rooms SET type=?, price=?, status=? WHERE room_no=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
 
-            PreparedStatement pst =
-                    conn.prepareStatement(sql);
+            pst.setString(1, typeCombo.getValue());
+            pst.setString(2, priceField.getText());
+            pst.setString(3, statusCombo.getValue());
+            pst.setString(4, selectedRoomNo);
 
-            pst.setString(1,
-                    typeCombo.getValue());
+            int rows = pst.executeUpdate();
 
-            pst.setString(2,
-                    priceField.getText());
-
-            pst.setString(3,
-                    statusCombo.getValue());
-
-            pst.setString(4,
-                    roomNoField.getText());
-
-            pst.executeUpdate();
+            if (rows > 0) {
+                showSuccess("Room updated successfully");
+            } else {
+                showError("Update failed");
+            }
 
             loadRooms();
-
             clearFields();
 
         } catch (Exception e) {
-
+            showError("Failed to update room");
             e.printStackTrace();
-
         }
-
     }
-
 
     @FXML
     private void deleteRoom() {
 
-        try {
-
-            Connection conn = DBConnection.connect();
-
-            String sql =
-                    "DELETE FROM rooms WHERE room_no=?";
-
-            PreparedStatement pst =
-                    conn.prepareStatement(sql);
-
-            pst.setString(1,
-                    roomNoField.getText());
-
-            pst.executeUpdate();
-
-            loadRooms();
-
-            clearFields();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
+        if (selectedRoomNo == null) {
+            showError("Select a room first");
+            return;
         }
 
-    }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Room");
+        confirm.setHeaderText("Are you sure?");
+        confirm.setContentText("This action cannot be undone.");
 
+        Optional<ButtonType> result = confirm.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            try {
+                Connection conn = DBConnection.connect();
+
+                String sql = "DELETE FROM rooms WHERE room_no=?";
+                PreparedStatement pst = conn.prepareStatement(sql);
+                pst.setString(1, selectedRoomNo);
+
+                pst.executeUpdate();
+
+                showSuccess("Room deleted successfully");
+
+                loadRooms();
+                clearFields();
+
+            } catch (Exception e) {
+                showError("Failed to delete room");
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML
     private void changeStatus() {
 
-        try {
+        if (selectedRoomNo == null) {
+            showError("Select a room first");
+            return;
+        }
 
+        try {
             Connection conn = DBConnection.connect();
 
-            String sql =
-                    "UPDATE rooms SET status=? WHERE room_no=?";
+            String sql = "UPDATE rooms SET status=? WHERE room_no=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
 
-            PreparedStatement pst =
-                    conn.prepareStatement(sql);
-
-            pst.setString(1,
-                    statusCombo.getValue());
-
-            pst.setString(2,
-                    roomNoField.getText());
+            pst.setString(1, statusCombo.getValue());
+            pst.setString(2, selectedRoomNo);
 
             pst.executeUpdate();
+
+            showSuccess("Status updated");
 
             loadRooms();
 
         } catch (Exception e) {
-
+            showError("Failed to update status");
             e.printStackTrace();
-
         }
-
     }
-
 
     @FXML
     private void searchRoom() {
 
-        ObservableList<Room> filteredList =
-                FXCollections.observableArrayList();
+        if (searchField.getText().isEmpty()) {
+            loadRooms();
+            return;
+        }
+
+        ObservableList<Room> filteredList = FXCollections.observableArrayList();
 
         try {
-
             Connection conn = DBConnection.connect();
 
-            String sql =
-                    "SELECT * FROM rooms WHERE room_no LIKE ?";
+            String sql = "SELECT * FROM rooms WHERE room_no LIKE ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, "%" + searchField.getText() + "%");
 
-            PreparedStatement pst =
-                    conn.prepareStatement(sql);
-
-            pst.setString(1,
-                    "%" + searchField.getText() + "%");
-
-            ResultSet rs =
-                    pst.executeQuery();
+            ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-
                 filteredList.add(new Room(
-
                         rs.getString("room_no"),
                         rs.getString("type"),
                         rs.getString("price"),
                         rs.getString("status")
-
                 ));
-
             }
 
             roomTable.setItems(filteredList);
 
         } catch (Exception e) {
-
+            showError("Search failed");
             e.printStackTrace();
-
         }
-
     }
-
 
     private void clearFields() {
-
         roomNoField.clear();
-
         typeCombo.setValue(null);
-
         priceField.clear();
-
         statusCombo.setValue(null);
-
+        selectedRoomNo = null;
     }
 
+    // 🔔 Alerts
+    private void showSuccess(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(msg);
+        alert.show();
+    }
+
+    private void showError(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(msg);
+        alert.show();
+    }
 }
