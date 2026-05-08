@@ -9,40 +9,66 @@ public class Guest {
     private final StringProperty contact;
     private final StringProperty email;
     private final StringProperty address;
-    private final StringProperty idType;
-    private final StringProperty idNumber;
-    private final StringProperty status; // ⭐ NEW
+    private final StringProperty status;
 
-    public Guest(String name, String contact, String email,
-                 String address, String idType, String idNumber, String status) {
+    // ================= CONSTRUCTOR =================
+    public Guest(String name,
+                 String contact,
+                 String email,
+                 String address,
+                 String status) {
 
         this.name = new SimpleStringProperty(name);
         this.contact = new SimpleStringProperty(contact);
         this.email = new SimpleStringProperty(email);
         this.address = new SimpleStringProperty(address);
-        this.idType = new SimpleStringProperty(idType);
-        this.idNumber = new SimpleStringProperty(idNumber);
-        this.status = new SimpleStringProperty(status); // ⭐ NEW
+        this.status = new SimpleStringProperty(status);
     }
 
-    // PROPERTIES
-    public StringProperty nameProperty() { return name; }
-    public StringProperty contactProperty() { return contact; }
-    public StringProperty emailProperty() { return email; }
-    public StringProperty addressProperty() { return address; }
-    public StringProperty idTypeProperty() { return idType; }
-    public StringProperty idNumberProperty() { return idNumber; }
-    public StringProperty statusProperty() { return status; } // ⭐ NEW
+    // ================= PROPERTIES =================
+    public StringProperty nameProperty() {
+        return name;
+    }
 
-    // GETTERS
-    public String getName() { return name.get(); }
-    public String getContact() { return contact.get(); }
-    public String getEmail() { return email.get(); }
-    public String getAddress() { return address.get(); }
-    public String getIdType() { return idType.get(); }
-    public String getIdNumber() { return idNumber.get(); }
-    public String getStatus() { return status.get(); } // ⭐ NEW
+    public StringProperty contactProperty() {
+        return contact;
+    }
 
-    // SETTERS
-    public void setStatus(String value) { status.set(value); } // ⭐ NEW
+    public StringProperty emailProperty() {
+        return email;
+    }
+
+    public StringProperty addressProperty() {
+        return address;
+    }
+
+    public StringProperty statusProperty() {
+        return status;
+    }
+
+    // ================= GETTERS =================
+    public String getName() {
+        return name.get();
+    }
+
+    public String getContact() {
+        return contact.get();
+    }
+
+    public String getEmail() {
+        return email.get();
+    }
+
+    public String getAddress() {
+        return address.get();
+    }
+
+    public String getStatus() {
+        return status.get();
+    }
+
+    // ================= SETTERS =================
+    public void setStatus(String value) {
+        status.set(value);
+    }
 }

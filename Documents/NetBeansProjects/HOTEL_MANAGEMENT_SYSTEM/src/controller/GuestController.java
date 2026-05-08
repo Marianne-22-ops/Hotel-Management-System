@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import model.Guest;
 
 import java.sql.Connection;
@@ -16,11 +17,10 @@ import java.util.Optional;
 
 public class GuestController {
 
-    @FXML private TextField nameField, contactField, emailField, addressField, idNumberField, searchField;
-    @FXML private ComboBox<String> idTypeCombo;
+    @FXML private TextField nameField, contactField, emailField, addressField, searchField;
 
     @FXML private TableView<Guest> guestTable;
-    @FXML private TableColumn<Guest, String> colName, colContact, colEmail, colAddress, colIdType, colIdNumber;
+    @FXML private TableColumn<Guest, String> colName, colContact, colEmail, colAddress;
     @FXML private TableColumn<Guest, String> colStatus;
 
     private final ObservableList<Guest> guestList = FXCollections.observableArrayList();
@@ -31,21 +31,16 @@ public class GuestController {
     @FXML
     public void initialize() {
 
-        idTypeCombo.getItems().addAll("Passport", "Driver License", "National ID");
-
         colName.setCellValueFactory(data -> data.getValue().nameProperty());
         colContact.setCellValueFactory(data -> data.getValue().contactProperty());
         colEmail.setCellValueFactory(data -> data.getValue().emailProperty());
         colAddress.setCellValueFactory(data -> data.getValue().addressProperty());
-        colIdType.setCellValueFactory(data -> data.getValue().idTypeProperty());
-        colIdNumber.setCellValueFactory(data -> data.getValue().idNumberProperty());
         colStatus.setCellValueFactory(data -> data.getValue().statusProperty());
 
         loadGuests();
 
         // TABLE CLICK
-        guestTable.setOnMouseClicked(event -> {
-
+        guestTable.setOnMouseClicked((MouseEvent event) -> {
             Guest selected = guestTable.getSelectionModel().getSelectedItem();
 
             if (selected != null) {
@@ -55,12 +50,10 @@ public class GuestController {
                 contactField.setText(selected.getContact());
                 emailField.setText(selected.getEmail());
                 addressField.setText(selected.getAddress());
-                idTypeCombo.setValue(selected.getIdType());
-                idNumberField.setText(selected.getIdNumber());
             }
         });
 
-        // ✅ Black bold headers
+        // BLACK BOLD HEADERS
         Platform.runLater(() -> {
             guestTable.lookupAll(".column-header .label").forEach(node -> {
                 node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
@@ -81,13 +74,12 @@ public class GuestController {
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
+
                 guestList.add(new Guest(
                         rs.getString("name"),
                         rs.getString("contact"),
                         rs.getString("email"),
                         rs.getString("address"),
-                        rs.getString("id_type"),
-                        rs.getString("id_number"),
                         rs.getString("status")
                 ));
             }
@@ -111,15 +103,13 @@ public class GuestController {
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "INSERT INTO guests(name, contact, email, address, id_type, id_number, status) VALUES(?,?,?,?,?,?, 'Active')";
+            String sql = "INSERT INTO guests(name, contact, email, address, status) VALUES(?,?,?,?, 'Active')";
             PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, nameField.getText());
             pst.setString(2, contactField.getText());
             pst.setString(3, emailField.getText());
             pst.setString(4, addressField.getText());
-            pst.setString(5, idTypeCombo.getValue());
-            pst.setString(6, idNumberField.getText());
 
             pst.executeUpdate();
 
@@ -145,16 +135,14 @@ public class GuestController {
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "UPDATE guests SET name=?, contact=?, email=?, address=?, id_type=?, id_number=? WHERE name=?";
+            String sql = "UPDATE guests SET name=?, contact=?, email=?, address=? WHERE name=?";
             PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, nameField.getText());
             pst.setString(2, contactField.getText());
             pst.setString(3, emailField.getText());
             pst.setString(4, addressField.getText());
-            pst.setString(5, idTypeCombo.getValue());
-            pst.setString(6, idNumberField.getText());
-            pst.setString(7, selectedGuestName);
+            pst.setString(5, selectedGuestName);
 
             pst.executeUpdate();
 
@@ -191,6 +179,7 @@ public class GuestController {
 
                 String sql = "DELETE FROM guests WHERE name=?";
                 PreparedStatement pst = con.prepareStatement(sql);
+
                 pst.setString(1, selectedGuestName);
 
                 pst.executeUpdate();
@@ -222,6 +211,7 @@ public class GuestController {
             PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, selectedGuestName);
+
             pst.executeUpdate();
 
             showSuccess("Guest Activated");
@@ -249,18 +239,18 @@ public class GuestController {
 
             String sql = "SELECT * FROM guests WHERE name LIKE ?";
             PreparedStatement pst = con.prepareStatement(sql);
+
             pst.setString(1, "%" + searchField.getText() + "%");
 
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
+
                 filtered.add(new Guest(
                         rs.getString("name"),
                         rs.getString("contact"),
                         rs.getString("email"),
                         rs.getString("address"),
-                        rs.getString("id_type"),
-                        rs.getString("id_number"),
                         rs.getString("status")
                 ));
             }
@@ -274,12 +264,12 @@ public class GuestController {
 
     // ================= HELPERS =================
     private void clearFields() {
+
         nameField.clear();
         contactField.clear();
         emailField.clear();
         addressField.clear();
-        idTypeCombo.setValue(null);
-        idNumberField.clear();
+
         selectedGuestName = null;
     }
 

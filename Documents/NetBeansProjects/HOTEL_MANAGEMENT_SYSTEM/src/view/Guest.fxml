@@ -98,32 +98,6 @@
                                           -fx-padding:4 10;
                                           -fx-font-size:13px;"/>
                     </VBox>
-                    <VBox spacing="3" prefWidth="155">
-                        <Label text="ID Type"
-                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
-                        <ComboBox fx:id="idTypeCombo"
-                                  promptText="Select ID Type"
-                                  prefWidth="155"
-                                  prefHeight="32"
-                                  style="-fx-background-color:#f8fafc;
-                                         -fx-border-color:#e2e8f0;
-                                         -fx-border-radius:6;
-                                         -fx-background-radius:6;
-                                         -fx-font-size:13px;"/>
-                    </VBox>
-                    <VBox spacing="3" HBox.hgrow="ALWAYS">
-                        <Label text="ID Number"
-                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
-                        <TextField fx:id="idNumberField"
-                                   promptText="e.g. 1234-5678"
-                                   prefHeight="32"
-                                   style="-fx-background-color:#f8fafc;
-                                          -fx-border-color:#e2e8f0;
-                                          -fx-border-radius:6;
-                                          -fx-background-radius:6;
-                                          -fx-padding:4 10;
-                                          -fx-font-size:13px;"/>
-                    </VBox>
                 </HBox>
 
                 <Separator/>
@@ -199,8 +173,6 @@
                         <TableColumn fx:id="colContact"  text="Contact"  prefWidth="120"/>
                         <TableColumn fx:id="colEmail"    text="Email"    prefWidth="150"/>
                         <TableColumn fx:id="colAddress"  text="Address"  prefWidth="150"/>
-                        <TableColumn fx:id="colIdType"   text="ID Type"  prefWidth="120"/>
-                        <TableColumn fx:id="colIdNumber" text="ID No."   prefWidth="120"/>
                         <TableColumn fx:id="colStatus"   text="Status"   prefWidth="100"/>
                     </columns>
                 </TableView>
