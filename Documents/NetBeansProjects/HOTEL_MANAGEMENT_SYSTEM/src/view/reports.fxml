@@ -1,78 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
+<ScrollPane fitToWidth="true"
+            fitToHeight="false"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.ReportController"
-            style="-fx-background-color: #1e293b;">
+            style="-fx-background-color:#1e293b;
+                   -fx-background:#1e293b;"
+            prefWidth="700"
+            prefHeight="462"
+            minWidth="700"
+            minHeight="462">
 
-    <children>
+    <content>
+        <VBox spacing="12"
+              style="-fx-background-color:#1e293b;
+                     -fx-padding:16;">
 
-        <VBox spacing="20"
-              AnchorPane.topAnchor="20"
-              AnchorPane.leftAnchor="20"
-              AnchorPane.rightAnchor="20"
-              AnchorPane.bottomAnchor="20">
-
-            <!-- TITLE -->
+            <!-- PAGE TITLE -->
             <Label text="Reports"
-                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                   style="-fx-font-size:18px;
+                          -fx-font-weight:bold;
+                          -fx-text-fill:#f1f5f9;"/>
 
-            <!-- FILTER -->
-            <HBox spacing="10">
-                <ComboBox fx:id="reportTypeCombo" promptText="Select Report Type"/>
-                <Button text="Generate Report" onAction="#generateReport"/>
-                <Button text="Export CSV" onAction="#exportReport"/>
-                <Button text="Print" onAction="#printReport"/>
-            </HBox>
-
-            <!-- SUMMARY -->
+            <!-- FILTER CARD -->
             <VBox spacing="10"
-                  style="-fx-padding:15; -fx-background-color:white; -fx-background-radius:10;">
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-                <Label text="System Summary" style="-fx-font-weight:bold;"/>
+                <Label text="GENERATE REPORT"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
-                <Label fx:id="totalGuestsLabel"/>
-                <Label fx:id="occupiedRoomsLabel"/>
-                <Label fx:id="availableRoomsLabel"/>
-                <Label fx:id="totalRevenueLabel"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <VBox spacing="3" prefWidth="200">
+                        <Label text="Report Type"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <ComboBox fx:id="reportTypeCombo"
+                                  promptText="Select Report Type"
+                                  prefHeight="32"
+                                  prefWidth="200"
+                                  style="-fx-background-color:#f8fafc;
+                                         -fx-border-color:#e2e8f0;
+                                         -fx-border-radius:6;
+                                         -fx-background-radius:6;
+                                         -fx-font-size:13px;"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <VBox spacing="3">
+                        <Label text=" " style="-fx-font-size:11px;"/>
+                        <HBox spacing="8">
+                            <Button text="Generate Report"
+                                    onAction="#generateReport"
+                                    prefHeight="32"
+                                    style="-fx-background-color:#2563eb; -fx-text-fill:white;
+                                           -fx-font-size:13px; -fx-font-weight:bold;
+                                           -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                            <Button text="Export CSV"
+                                    onAction="#exportReport"
+                                    prefHeight="32"
+                                    style="-fx-background-color:#0f766e; -fx-text-fill:white;
+                                           -fx-font-size:13px; -fx-font-weight:bold;
+                                           -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                            <Button text="Print"
+                                    onAction="#printReport"
+                                    prefHeight="32"
+                                    style="-fx-background-color:#0f172a; -fx-text-fill:white;
+                                           -fx-font-size:13px; -fx-font-weight:bold;
+                                           -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
 
             </VBox>
 
-            <!-- TODAY -->
+            <!-- SYSTEM SUMMARY CARD -->
             <VBox spacing="10"
-                  style="-fx-padding:15; -fx-background-color:white; -fx-background-radius:10;">
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-                <Label text="Today's Activity" style="-fx-font-weight:bold;"/>
+                <Label text="SYSTEM SUMMARY"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
-                <Label fx:id="checkInLabel"/>
-                <Label fx:id="checkOutLabel"/>
-                <Label fx:id="reservationLabel"/>
+                <HBox spacing="10">
+
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Total Guests"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="totalGuestsLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Occupied Rooms"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="occupiedRoomsLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Available Rooms"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="availableRoomsLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Total Revenue"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="totalRevenueLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                </HBox>
 
             </VBox>
 
-            <!-- TABLE -->
-            <VBox VBox.vgrow="ALWAYS"
-                  style="-fx-padding:15; -fx-background-color:white; -fx-background-radius:10;">
+            <!-- TODAY'S ACTIVITY CARD -->
+            <VBox spacing="10"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-                <Label text="Recent Transactions" style="-fx-font-weight:bold;"/>
+                <Label text="TODAY'S ACTIVITY"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
-                <TableView fx:id="reportTable" VBox.vgrow="ALWAYS">
+                <HBox spacing="10">
 
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Check-Ins"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="checkInLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Check-Outs"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="checkOutLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                    <VBox spacing="4" prefWidth="200"
+                          style="-fx-background-color:#f8fafc;
+                                 -fx-padding:10;
+                                 -fx-background-radius:8;
+                                 -fx-border-color:#e2e8f0;
+                                 -fx-border-radius:8;">
+                        <Label text="Reservations"
+                               style="-fx-font-size:10px; -fx-text-fill:#94a3b8; -fx-font-weight:bold;"/>
+                        <Label fx:id="reservationLabel"
+                               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1e293b;"/>
+                    </VBox>
+
+                </HBox>
+
+            </VBox>
+
+            <!-- RECENT TRANSACTIONS TABLE CARD -->
+            <VBox spacing="8"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
+
+                <Label text="RECENT TRANSACTIONS"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
+
+                <TableView fx:id="reportTable"
+                           prefHeight="300"
+                           maxWidth="1.7976931348623157E308"
+                           style="-fx-background-color:transparent;
+                                  -fx-border-color:#e2e8f0;
+                                  -fx-border-radius:7;
+                                  -fx-background-radius:7;
+                                  -fx-table-cell-border-color:#f1f5f9;
+                                  -fx-font-size:13px;">
                     <columns>
-                        <TableColumn fx:id="colGuest" text="Guest"/>
-                        <TableColumn fx:id="colRoom" text="Room"/>
-                        <TableColumn fx:id="colAmount" text="Amount"/>
-                        <TableColumn fx:id="colDate" text="Date"/>
+                        <TableColumn fx:id="colGuest"  text="Guest"  prefWidth="200"/>
+                        <TableColumn fx:id="colRoom"   text="Room"   prefWidth="150"/>
+                        <TableColumn fx:id="colAmount" text="Amount" prefWidth="150"/>
+                        <TableColumn fx:id="colDate"   text="Date"   prefWidth="200"/>
                     </columns>
-
                 </TableView>
 
             </VBox>
 
         </VBox>
-
-    </children>
-</AnchorPane>
+    </content>
+</ScrollPane>

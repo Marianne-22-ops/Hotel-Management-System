@@ -1,6 +1,7 @@
 package controller;
 
 import database.DBConnection;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import model.Guest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class GuestController {
@@ -19,7 +21,7 @@ public class GuestController {
 
     @FXML private TableView<Guest> guestTable;
     @FXML private TableColumn<Guest, String> colName, colContact, colEmail, colAddress, colIdType, colIdNumber;
-    @FXML private TableColumn<Guest, String> colStatus; // ✅ status column
+    @FXML private TableColumn<Guest, String> colStatus;
 
     private final ObservableList<Guest> guestList = FXCollections.observableArrayList();
 
@@ -37,7 +39,7 @@ public class GuestController {
         colAddress.setCellValueFactory(data -> data.getValue().addressProperty());
         colIdType.setCellValueFactory(data -> data.getValue().idTypeProperty());
         colIdNumber.setCellValueFactory(data -> data.getValue().idNumberProperty());
-        colStatus.setCellValueFactory(data -> data.getValue().statusProperty()); // ✅ show status
+        colStatus.setCellValueFactory(data -> data.getValue().statusProperty());
 
         loadGuests();
 
@@ -56,6 +58,13 @@ public class GuestController {
                 idTypeCombo.setValue(selected.getIdType());
                 idNumberField.setText(selected.getIdNumber());
             }
+        });
+
+        // ✅ Black bold headers
+        Platform.runLater(() -> {
+            guestTable.lookupAll(".column-header .label").forEach(node -> {
+                node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
+            });
         });
     }
 
@@ -79,15 +88,14 @@ public class GuestController {
                         rs.getString("address"),
                         rs.getString("id_type"),
                         rs.getString("id_number"),
-                        rs.getString("status") // ✅ include status
+                        rs.getString("status")
                 ));
             }
 
             guestTable.setItems(guestList);
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Error loading guests");
-            e.printStackTrace();
         }
     }
 
@@ -120,84 +128,83 @@ public class GuestController {
             loadGuests();
             clearFields();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Failed to add guest");
-            e.printStackTrace();
         }
     }
-    
+
+    // ================= EDIT =================
     @FXML
-private void editGuest() {
+    private void editGuest() {
 
-    if (selectedGuestName == null) {
-        showError("Select a guest first");
-        return;
-    }
-
-    try {
-        Connection con = DBConnection.connect();
-
-        String sql = "UPDATE guests SET name=?, contact=?, email=?, address=?, id_type=?, id_number=? WHERE name=?";
-        PreparedStatement pst = con.prepareStatement(sql);
-
-        pst.setString(1, nameField.getText());
-        pst.setString(2, contactField.getText());
-        pst.setString(3, emailField.getText());
-        pst.setString(4, addressField.getText());
-        pst.setString(5, idTypeCombo.getValue());
-        pst.setString(6, idNumberField.getText());
-        pst.setString(7, selectedGuestName);
-
-        pst.executeUpdate();
-
-        showSuccess("Guest updated successfully");
-
-        loadGuests();
-        clearFields();
-
-    } catch (Exception e) {
-        showError("Failed to update guest");
-        e.printStackTrace();
-    }
-}
-
-@FXML
-private void deleteGuest() {
-
-    if (selectedGuestName == null) {
-        showError("Select a guest first");
-        return;
-    }
-
-    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-    confirm.setTitle("Delete Guest");
-    confirm.setHeaderText("Are you sure?");
-    confirm.setContentText("This action cannot be undone.");
-
-    Optional<ButtonType> result = confirm.showAndWait();
-
-    if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (selectedGuestName == null) {
+            showError("Select a guest first");
+            return;
+        }
 
         try {
             Connection con = DBConnection.connect();
 
-            String sql = "DELETE FROM guests WHERE name=?";
+            String sql = "UPDATE guests SET name=?, contact=?, email=?, address=?, id_type=?, id_number=? WHERE name=?";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, selectedGuestName);
+
+            pst.setString(1, nameField.getText());
+            pst.setString(2, contactField.getText());
+            pst.setString(3, emailField.getText());
+            pst.setString(4, addressField.getText());
+            pst.setString(5, idTypeCombo.getValue());
+            pst.setString(6, idNumberField.getText());
+            pst.setString(7, selectedGuestName);
 
             pst.executeUpdate();
 
-            showSuccess("Guest deleted successfully");
+            showSuccess("Guest updated successfully");
 
             loadGuests();
             clearFields();
 
-        } catch (Exception e) {
-            showError("Failed to delete guest");
-            e.printStackTrace();
+        } catch (SQLException e) {
+            showError("Failed to update guest");
         }
     }
-}
+
+    // ================= DELETE =================
+    @FXML
+    private void deleteGuest() {
+
+        if (selectedGuestName == null) {
+            showError("Select a guest first");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Guest");
+        confirm.setHeaderText("Are you sure?");
+        confirm.setContentText("This action cannot be undone.");
+
+        Optional<ButtonType> result = confirm.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            try {
+                Connection con = DBConnection.connect();
+
+                String sql = "DELETE FROM guests WHERE name=?";
+                PreparedStatement pst = con.prepareStatement(sql);
+                pst.setString(1, selectedGuestName);
+
+                pst.executeUpdate();
+
+                showSuccess("Guest deleted successfully");
+
+                loadGuests();
+                clearFields();
+
+            } catch (SQLException e) {
+                showError("Failed to delete guest");
+            }
+        }
+    }
 
     // ================= ACTIVATE =================
     @FXML
@@ -221,9 +228,8 @@ private void deleteGuest() {
 
             loadGuests();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Failed to activate guest");
-            e.printStackTrace();
         }
     }
 
@@ -261,9 +267,8 @@ private void deleteGuest() {
 
             guestTable.setItems(filtered);
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Search failed");
-            e.printStackTrace();
         }
     }
 

@@ -1,105 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
+<ScrollPane fitToWidth="true"
+            fitToHeight="false"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.PaymentController"
-            style="-fx-background-color:#1e293b;">
+            style="-fx-background-color:#1e293b;
+                   -fx-background:#1e293b;"
+            prefWidth="700"
+            prefHeight="462"
+            minWidth="700"
+            minHeight="462">
 
-    <children>
+    <content>
+        <VBox spacing="12"
+              style="-fx-background-color:#1e293b;
+                     -fx-padding:16;">
 
-        <VBox spacing="20"
-              AnchorPane.topAnchor="20"
-              AnchorPane.leftAnchor="20"
-              AnchorPane.rightAnchor="20"
-              AnchorPane.bottomAnchor="20">
-
-            <!-- TITLE -->
+            <!-- PAGE TITLE -->
             <Label text="Payments"
-                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                   style="-fx-font-size:18px;
+                          -fx-font-weight:bold;
+                          -fx-text-fill:#f1f5f9;"/>
 
-            <!-- FORM -->
+            <!-- FORM CARD -->
             <VBox spacing="10"
-                  style="-fx-border-color:#cbd5e1;
-                         -fx-border-radius:12;
-                         -fx-background-radius:12;
-                         -fx-padding:15;
-                         -fx-background-color:rgba(255,255,255,0.7);">
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
+                <Label text="PAYMENT DETAILS"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
+
+                <!-- INPUT ROW -->
                 <HBox spacing="10">
 
-                    <!-- ✅ GUEST -->
-                    <ComboBox fx:id="guestCombo"
-                              promptText="Select Guest"
-                              HBox.hgrow="ALWAYS"/>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Guest"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <ComboBox fx:id="guestCombo"
+                                  promptText="Select Guest"
+                                  prefHeight="32"
+                                  maxWidth="1.7976931348623157E308"
+                                  style="-fx-background-color:#f8fafc;
+                                         -fx-border-color:#e2e8f0;
+                                         -fx-border-radius:6;
+                                         -fx-background-radius:6;
+                                         -fx-font-size:13px;"
+                                  HBox.hgrow="ALWAYS"/>
+                    </VBox>
 
-                    <!-- ✅ FIXED: ROOM FIELD (AUTO) -->
-                    <TextField fx:id="roomField"
-                               promptText="Room"
-                               editable="false"/>
+                    <VBox spacing="3" prefWidth="140">
+                        <Label text="Room"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="roomField"
+                                   promptText="Room"
+                                   editable="false"
+                                   prefHeight="32"
+                                   prefWidth="140"
+                                   style="-fx-background-color:#f1f5f9;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
 
-                    <!-- ✅ AMOUNT AUTO -->
-                    <TextField fx:id="amountField"
-                               promptText="Auto Amount"
-                               editable="false"/>
+                    <VBox spacing="3" prefWidth="155">
+                        <Label text="Amount"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="amountField"
+                                   promptText="Auto Amount"
+                                   editable="false"
+                                   prefHeight="32"
+                                   prefWidth="155"
+                                   style="-fx-background-color:#f1f5f9;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
 
-                    <!-- ✅ METHOD -->
-                    <ComboBox fx:id="methodCombo"
-                              promptText="Payment Method"/>
+                    <VBox spacing="3" prefWidth="150">
+                        <Label text="Payment Method"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <ComboBox fx:id="methodCombo"
+                                  promptText="Payment Method"
+                                  prefHeight="32"
+                                  prefWidth="150"
+                                  style="-fx-background-color:#f8fafc;
+                                         -fx-border-color:#e2e8f0;
+                                         -fx-border-radius:6;
+                                         -fx-background-radius:6;
+                                         -fx-font-size:13px;"/>
+                    </VBox>
+
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Reference No."
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="referenceField"
+                                   promptText="Reference No (optional)"
+                                   prefHeight="32"
+                                   maxWidth="1.7976931348623157E308"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"
+                                   HBox.hgrow="ALWAYS"/>
+                    </VBox>
 
                 </HBox>
 
-                <HBox spacing="10">
+                <Separator/>
 
-                    <TextField fx:id="referenceField"
-                               promptText="Reference No (optional)"
-                               HBox.hgrow="ALWAYS"/>
+                <!-- ACTIONS -->
+                <Label text="ACTIONS"
+                       style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Button text="Record Payment"
+                            onAction="#recordPayment"
+                            prefHeight="32"
+                            style="-fx-background-color:#2563eb; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
 
                     <TextField fx:id="searchField"
                                promptText="Search Guest..."
-                               HBox.hgrow="ALWAYS"/>
-
-                    <Button text="Record Payment"
-                            onAction="#recordPayment"
-                            style="-fx-background-color:#22c55e; -fx-text-fill:white;"/>
-
+                               prefHeight="32"
+                               prefWidth="200"
+                               style="-fx-background-color:#f8fafc;
+                                      -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:6;
+                                      -fx-background-radius:6;
+                                      -fx-padding:4 10;
+                                      -fx-font-size:13px;"/>
                     <Button text="Search"
-                            onAction="#searchPayment"/>
-
+                            onAction="#searchPayment"
+                            prefHeight="32"
+                            style="-fx-background-color:#0f172a; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
                 </HBox>
 
             </VBox>
 
-            <!-- TABLE -->
-            <VBox VBox.vgrow="ALWAYS"
-                  style="-fx-border-color:#cbd5e1;
-                         -fx-border-radius:12;
-                         -fx-background-radius:12;
-                         -fx-padding:15;
-                         -fx-background-color:rgba(255,255,255,0.7);">
+            <!-- PAYMENT HISTORY TABLE CARD -->
+            <VBox spacing="8"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-                <Label text="Payment History"
-                       style="-fx-font-weight:bold;"/>
+                <Label text="PAYMENT HISTORY"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
                 <TableView fx:id="paymentTable"
-                           VBox.vgrow="ALWAYS">
-
+                           prefHeight="300"
+                           maxWidth="1.7976931348623157E308"
+                           style="-fx-background-color:transparent;
+                                  -fx-border-color:#e2e8f0;
+                                  -fx-border-radius:7;
+                                  -fx-background-radius:7;
+                                  -fx-table-cell-border-color:#f1f5f9;
+                                  -fx-font-size:13px;">
                     <columns>
-                        <TableColumn fx:id="colGuest" text="Guest" prefWidth="150"/>
-                        <TableColumn fx:id="colRoom" text="Room" prefWidth="100"/>
-                        <TableColumn fx:id="colAmount" text="Amount" prefWidth="120"/>
-                        <TableColumn fx:id="colMethod" text="Method" prefWidth="120"/>
+                        <TableColumn fx:id="colGuest"     text="Guest"     prefWidth="150"/>
+                        <TableColumn fx:id="colRoom"      text="Room"      prefWidth="100"/>
+                        <TableColumn fx:id="colAmount"    text="Amount"    prefWidth="120"/>
+                        <TableColumn fx:id="colMethod"    text="Method"    prefWidth="120"/>
                         <TableColumn fx:id="colReference" text="Reference" prefWidth="150"/>
-                        <TableColumn fx:id="colDate" text="Date" prefWidth="180"/>
+                        <TableColumn fx:id="colDate"      text="Date"      prefWidth="180"/>
                     </columns>
-
                 </TableView>
 
             </VBox>
 
         </VBox>
-
-    </children>
-</AnchorPane>
+    </content>
+</ScrollPane>

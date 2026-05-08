@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 
 import model.Room;
 import database.DBConnection;
+import java.sql.SQLException;
 
 public class RoomController implements Initializable {
 
@@ -32,9 +34,8 @@ public class RoomController implements Initializable {
     @FXML private TableColumn<Room, String> colPrice;
     @FXML private TableColumn<Room, String> colStatus;
 
-    private ObservableList<Room> roomList = FXCollections.observableArrayList();
+    private final ObservableList<Room> roomList = FXCollections.observableArrayList();
 
-    // 🔥 store selected room
     private String selectedRoomNo;
 
     @Override
@@ -42,7 +43,7 @@ public class RoomController implements Initializable {
 
         typeCombo.getItems().addAll("Single", "Double", "Suite", "Deluxe");
 
-        statusCombo.getItems().addAll("Available", "Occupied", "Maintenance", "Reserved");
+        statusCombo.getItems().addAll("Available", "Maintenance");
 
         colRoomNo.setCellValueFactory(data -> data.getValue().roomNoProperty());
         colType.setCellValueFactory(data -> data.getValue().typeProperty());
@@ -51,7 +52,6 @@ public class RoomController implements Initializable {
 
         loadRooms();
 
-        // table click
         roomTable.setOnMouseClicked(event -> {
 
             Room selected = roomTable.getSelectionModel().getSelectedItem();
@@ -65,6 +65,13 @@ public class RoomController implements Initializable {
                 priceField.setText(selected.getPrice());
                 statusCombo.setValue(selected.getStatus());
             }
+        });
+
+        // ✅ Black bold headers — runLater para hintayin muna na ma-render ang table
+        Platform.runLater(() -> {
+            roomTable.lookupAll(".column-header .label").forEach(node -> {
+                node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
+            });
         });
     }
 
@@ -90,9 +97,9 @@ public class RoomController implements Initializable {
 
             roomTable.setItems(roomList);
 
-        } catch (Exception e) {
+
+        } catch (SQLException e) {
             showError("Error loading rooms");
-            e.printStackTrace();
         }
     }
 
@@ -122,9 +129,8 @@ public class RoomController implements Initializable {
             loadRooms();
             clearFields();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Failed to add room");
-            e.printStackTrace();
         }
     }
 
@@ -158,9 +164,8 @@ public class RoomController implements Initializable {
             loadRooms();
             clearFields();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Failed to update room");
-            e.printStackTrace();
         }
     }
 
@@ -195,9 +200,8 @@ public class RoomController implements Initializable {
                 loadRooms();
                 clearFields();
 
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 showError("Failed to delete room");
-                e.printStackTrace();
             }
         }
     }
@@ -225,9 +229,8 @@ public class RoomController implements Initializable {
 
             loadRooms();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Failed to update status");
-            e.printStackTrace();
         }
     }
 
@@ -261,9 +264,8 @@ public class RoomController implements Initializable {
 
             roomTable.setItems(filteredList);
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showError("Search failed");
-            e.printStackTrace();
         }
     }
 
@@ -275,7 +277,6 @@ public class RoomController implements Initializable {
         selectedRoomNo = null;
     }
 
-    // 🔔 Alerts
     private void showSuccess(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(msg);

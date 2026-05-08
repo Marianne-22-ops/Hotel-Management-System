@@ -1,114 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
+<ScrollPane
+            fitToWidth="true"
+            fitToHeight="false"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.RoomController"
-            style="-fx-background-color:#1e293b;">
+            style="-fx-background-color:#1e293b;
+                   -fx-background:#1e293b;"
+            prefWidth="700"
+            prefHeight="462"
+            minWidth="700"
+            minHeight="462">
 
-    <children>
-
-        <VBox spacing="20"
-              AnchorPane.topAnchor="20"
-              AnchorPane.leftAnchor="20"
-              AnchorPane.rightAnchor="20"
-              AnchorPane.bottomAnchor="20">
+    <content>
+        <VBox spacing="12"
+              style="-fx-background-color:#1e293b;
+                     -fx-padding:16;">
 
             <Label text="Room Management"
-                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                   style="-fx-font-size:18px;
+                          -fx-font-weight:bold;
+                          -fx-text-fill:#f1f5f9;"/>
 
+            <!-- FORM CARD -->
+            <VBox spacing="10"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-            <!-- FORM BOX -->
-            <VBox spacing="12"
-                  style="-fx-background-color:white; -fx-padding:15; -fx-background-radius:12;">
+                <Label text="ROOM DETAILS"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
-                <!-- INPUT FIELDS -->
                 <HBox spacing="10">
-
-                    <TextField fx:id="roomNoField"
-                               promptText="Room No"
-                               HBox.hgrow="ALWAYS"/>
-
-                    <ComboBox fx:id="typeCombo"
-                              promptText="Type"
-                              prefWidth="150"/>
-
-                    <TextField fx:id="priceField"
-                               promptText="Price"
-                               HBox.hgrow="ALWAYS"/>
-
-                    <ComboBox fx:id="statusCombo"
-                              promptText="Status"
-                              prefWidth="150"/>
-
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Room No"
+                               style="-fx-font-size:11px; -fx-text-fill:black;"/>
+                        <TextField fx:id="roomNoField"
+                                   promptText="e.g. 101"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" prefWidth="155">
+                        <Label text="Type"
+                               style="-fx-font-size:11px; -fx-text-fill:black;"/>
+                        <ComboBox fx:id="typeCombo"
+                                  promptText="Select type"
+                                  prefWidth="155"
+                                  prefHeight="32"
+                                  style="-fx-background-color:#f8fafc;
+                                         -fx-border-color:#e2e8f0;
+                                         -fx-border-radius:6;
+                                         -fx-background-radius:6;
+                                         -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Price"
+                               style="-fx-font-size:11px; -fx-text-fill:black;"/>
+                        <TextField fx:id="priceField"
+                                   promptText="e.g. 2500.00"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" prefWidth="155">
+                        <Label text="Status"
+                               style="-fx-font-size:11px; -fx-text-fill:black;"/>
+                        <ComboBox fx:id="statusCombo"
+                                  promptText="Select status"
+                                  prefWidth="155"
+                                  prefHeight="32"
+                                  style="-fx-background-color:#f8fafc;
+                                         -fx-border-color:#e2e8f0;
+                                         -fx-border-radius:6;
+                                         -fx-background-radius:6;
+                                         -fx-font-size:13px;"/>
+                    </VBox>
                 </HBox>
 
+                <Separator/>
 
-                <!-- BUTTONS -->
-                <HBox spacing="10">
-
-                    <Button text="Add Room"
-                            onAction="#addRoom"/>
-
-                    <Button text="Update Room"
-                            onAction="#updateRoom"/>
-
-                    <Button text="Delete Room"
-                            onAction="#deleteRoom"/>
-
-                    <Button text="Change Status"
-                            onAction="#changeStatus"/>
-
+                <Label text="ACTIONS"
+                       style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                <HBox spacing="8">
+                    <Button text="Add Room" onAction="#addRoom" prefHeight="32"
+                            style="-fx-background-color:#2563eb; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                    <Button text="Update Room" onAction="#updateRoom" prefHeight="32"
+                            style="-fx-background-color:#0f766e; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                    <Button text="Delete Room" onAction="#deleteRoom" prefHeight="32"
+                            style="-fx-background-color:#dc2626; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
                 </HBox>
 
+                <Separator/>
 
-                <!-- SEARCH -->
-                <HBox spacing="10">
-
+                <Label text="SEARCH"
+                       style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
                     <TextField fx:id="searchField"
                                promptText="Search Room Number"
+                               prefHeight="32"
+                               style="-fx-background-color:#f8fafc;
+                                      -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:6;
+                                      -fx-background-radius:6;
+                                      -fx-padding:4 10;
+                                      -fx-font-size:13px;"
                                HBox.hgrow="ALWAYS"/>
-
-                    <Button text="Search Room"
-                            onAction="#searchRoom"/>
-
+                    <Button text="Search Room" onAction="#searchRoom" prefHeight="32"
+                            style="-fx-background-color:#0f172a; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
                 </HBox>
 
             </VBox>
 
+            <!-- TABLE CARD -->
+            <VBox spacing="8"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-            <!-- TABLE -->
-            <VBox VBox.vgrow="ALWAYS"
-                  style="-fx-background-color:white; -fx-padding:15; -fx-background-radius:12;">
+                <Label text="ROOM LIST"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
                 <TableView fx:id="roomTable"
-                           VBox.vgrow="ALWAYS">
-
+                           prefHeight="300"
+                           maxWidth="1.7976931348623157E308"
+                           style="-fx-background-color:transparent;
+                                  -fx-border-color:#e2e8f0;
+                                  -fx-border-radius:7;
+                                  -fx-background-radius:7;
+                                  -fx-table-cell-border-color:#f1f5f9;
+                                  -fx-font-size:13px;">
                     <columns>
-
-                        <TableColumn fx:id="colRoomNo"
-                                     text="Room No"/>
-
-                        <TableColumn fx:id="colType"
-                                     text="Type"/>
-
-                        <TableColumn fx:id="colPrice"
-                                     text="Price"/>
-
-                        <TableColumn fx:id="colStatus"
-                                     text="Status"/>
-
+                        <TableColumn fx:id="colRoomNo" text="Room No" prefWidth="200"/>
+                        <TableColumn fx:id="colType"   text="Type"    prefWidth="220"/>
+                        <TableColumn fx:id="colPrice"  text="Price"   prefWidth="200"/>
+                        <TableColumn fx:id="colStatus" text="Status"  prefWidth="200"/>
                     </columns>
-
                 </TableView>
 
             </VBox>
 
         </VBox>
-
-    </children>
-
-</AnchorPane>
+    </content>
+</ScrollPane>

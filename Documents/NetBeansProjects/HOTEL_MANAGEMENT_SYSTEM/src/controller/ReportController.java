@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import model.Report;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 
 public class ReportController {
@@ -48,60 +49,54 @@ public class ReportController {
 
             ResultSet rs1 = con.prepareStatement("SELECT COUNT(*) FROM guests").executeQuery();
             rs1.next();
-            totalGuestsLabel.setText("Total Guests: " + rs1.getInt(1));
+            totalGuestsLabel.setText(String.valueOf(rs1.getInt(1)));
 
             ResultSet rs2 = con.prepareStatement("SELECT COUNT(*) FROM rooms WHERE status='Occupied'").executeQuery();
             rs2.next();
-            occupiedRoomsLabel.setText("Occupied Rooms: " + rs2.getInt(1));
+            occupiedRoomsLabel.setText(String.valueOf(rs2.getInt(1)));
 
             ResultSet rs3 = con.prepareStatement("SELECT COUNT(*) FROM rooms WHERE status='Available'").executeQuery();
             rs3.next();
-            availableRoomsLabel.setText("Available Rooms: " + rs3.getInt(1));
+            availableRoomsLabel.setText(String.valueOf(rs3.getInt(1)));
 
             ResultSet rs4 = con.prepareStatement("SELECT SUM(amount) FROM payments").executeQuery();
             rs4.next();
-            totalRevenueLabel.setText("Total Revenue: ₱" + rs4.getDouble(1));
+            totalRevenueLabel.setText("₱" + rs4.getDouble(1));
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
     // ================= TODAY =================
-private void loadTodayActivity() {
-    try {
-        Connection con = DBConnection.connect();
+    private void loadTodayActivity() {
+        try {
+            Connection con = DBConnection.connect();
 
-        // CURRENT CHECKED-IN
-        ResultSet rs1 = con.prepareStatement(
-                "SELECT COUNT(*) FROM reservations WHERE status='Checked-in'"
-        ).executeQuery();
-        rs1.next();
-        checkInLabel.setText("Check-ins: " + rs1.getInt(1));
+            ResultSet rs1 = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE status='Checked-in'"
+            ).executeQuery();
+            rs1.next();
+            checkInLabel.setText(String.valueOf(rs1.getInt(1)));
 
-        // CURRENT CHECKED-OUT
-        ResultSet rs2 = con.prepareStatement(
-                "SELECT COUNT(*) FROM reservations WHERE status='Checked-out'"
-        ).executeQuery();
-        rs2.next();
-        checkOutLabel.setText("Check-outs: " + rs2.getInt(1));
+            ResultSet rs2 = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE status='Checked-out'"
+            ).executeQuery();
+            rs2.next();
+            checkOutLabel.setText(String.valueOf(rs2.getInt(1)));
 
-        // NEW RESERVATIONS TODAY
-        String today = java.time.LocalDate.now().toString();
+            String today = java.time.LocalDate.now().toString();
+            PreparedStatement pst3 = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE DATE(created_at)=?"
+            );
+            pst3.setString(1, today);
+            ResultSet rs3 = pst3.executeQuery();
+            rs3.next();
+            reservationLabel.setText(String.valueOf(rs3.getInt(1)));
 
-        PreparedStatement pst3 = con.prepareStatement(
-                "SELECT COUNT(*) FROM reservations WHERE DATE(created_at)=?"
-        );
-        pst3.setString(1, today);
-
-        ResultSet rs3 = pst3.executeQuery();
-        rs3.next();
-        reservationLabel.setText("New Reservations: " + rs3.getInt(1));
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        } catch (SQLException e) {
+        }
     }
-}
+
     // ================= TABLE =================
     private void loadTransactions() {
         reportList.clear();
@@ -124,8 +119,7 @@ private void loadTodayActivity() {
 
             reportTable.setItems(reportList);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -146,20 +140,17 @@ private void loadTodayActivity() {
     @FXML
     private void exportReport() {
         try {
-            FileWriter writer = new FileWriter("report.csv");
-
-            for (Report r : reportList) {
-                writer.write(r.guestProperty().get() + "," +
-                             r.roomProperty().get() + "," +
-                             r.amountProperty().get() + "," +
-                             r.dateProperty().get() + "\n");
+            try (FileWriter writer = new FileWriter("report.csv")) {
+                for (Report r : reportList) {
+                    writer.write(r.guestProperty().get() + "," +
+                            r.roomProperty().get() + "," +
+                            r.amountProperty().get() + "," +
+                            r.dateProperty().get() + "\n");
+                }
             }
-
-            writer.close();
             new Alert(Alert.AlertType.INFORMATION, "Exported!").show();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
         }
     }
 

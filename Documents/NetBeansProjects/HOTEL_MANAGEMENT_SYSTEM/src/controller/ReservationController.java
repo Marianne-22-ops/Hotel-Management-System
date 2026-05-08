@@ -1,6 +1,7 @@
 package controller;
 
 import database.DBConnection;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import model.Reservation;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ReservationController {
 
@@ -69,6 +71,16 @@ public class ReservationController {
                 statusCombo.setValue(selected.getStatus());
             }
         });
+
+        // ✅ Black bold headers para sa dalawang table
+        Platform.runLater(() -> {
+            reservationTable.lookupAll(".column-header .label").forEach(node -> {
+                node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
+            });
+            historyTable.lookupAll(".column-header .label").forEach(node -> {
+                node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
+            });
+        });
     }
 
     // ================= AUTO CHECKOUT =================
@@ -87,8 +99,7 @@ public class ReservationController {
             PreparedStatement pst = con.prepareStatement(updateSql);
             pst.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -100,7 +111,7 @@ public class ReservationController {
             Connection con = DBConnection.connect();
 
             String sql = "SELECT name FROM guests WHERE status='Active' AND name NOT IN " +
-        "(SELECT guest FROM reservations WHERE status IN ('Reserved','Checked-in'))";
+                    "(SELECT guest FROM reservations WHERE status IN ('Reserved','Checked-in'))";
 
             ResultSet rs = con.prepareStatement(sql).executeQuery();
 
@@ -108,8 +119,7 @@ public class ReservationController {
                 guestCombo.getItems().add(rs.getString("name"));
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -125,8 +135,7 @@ public class ReservationController {
                 roomCombo.getItems().add(rs.getString("room_no") + " - " + rs.getString("type"));
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -150,8 +159,7 @@ public class ReservationController {
 
             reservationTable.setItems(reservationList);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -176,8 +184,7 @@ public class ReservationController {
 
             historyTable.setItems(historyList);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -210,8 +217,7 @@ public class ReservationController {
 
             refreshAll();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -244,24 +250,22 @@ public class ReservationController {
 
             if (newStatus.equals("Checked-out") || newStatus.equals("Cancelled")) {
 
-    updateRoomStatus(room, "Available");
+                updateRoomStatus(room, "Available");
 
-    // ⭐ ADD THIS
-    PreparedStatement pst2 = con.prepareStatement(
-            "UPDATE guests SET status='Inactive' WHERE name=?"
-    );
-    pst2.setString(1, guestCombo.getValue());
-    pst2.executeUpdate();
+                PreparedStatement pst2 = con.prepareStatement(
+                        "UPDATE guests SET status='Inactive' WHERE name=?"
+                );
+                pst2.setString(1, guestCombo.getValue());
+                pst2.executeUpdate();
 
-} else {
-    updateRoomStatus(room, "Occupied");
-}
+            } else {
+                updateRoomStatus(room, "Occupied");
+            }
 
             logHistory(guestCombo.getValue(), "Updated (" + newStatus + ")");
             refreshAll();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -288,8 +292,7 @@ public class ReservationController {
 
             refreshAll();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -327,8 +330,7 @@ public class ReservationController {
 
             reservationTable.setItems(filtered);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -359,8 +361,7 @@ public class ReservationController {
             pst.setString(2, room);
             pst.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -381,7 +382,7 @@ public class ReservationController {
 
         selectedGuest = null;
         selectedRoom = null;
-        selectedReservationId = 0; // ⭐ important
+        selectedReservationId = 0;
     }
 
     private void logHistory(String guest, String action) {
@@ -396,8 +397,7 @@ public class ReservationController {
             pst.setString(2, action);
             pst.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 

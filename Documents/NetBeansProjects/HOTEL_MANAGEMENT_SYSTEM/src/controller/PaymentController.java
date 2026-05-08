@@ -38,6 +38,16 @@ public class PaymentController {
         loadGuests();
         loadPayments();
 
+        // ================= HEADER TEXT COLOR =================
+        paymentTable.widthProperty().addListener((obs, oldVal, newVal) -> {
+            javafx.scene.layout.Pane header = (javafx.scene.layout.Pane) paymentTable.lookup("TableHeaderRow");
+            if (header != null) {
+                header.lookupAll(".column-header .label").forEach(node -> {
+                    node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
+                });
+            }
+        });
+
         guestCombo.setOnAction(e -> {
             if (guestCombo.getValue() != null) {
                 autoFillDetails(guestCombo.getValue());
@@ -53,7 +63,6 @@ public class PaymentController {
 
             Connection con = DBConnection.connect();
 
-            // ✅ ONLY reservations that are NOT yet paid
             String sql = "SELECT DISTINCT r.guest FROM reservations r " +
              "LEFT JOIN payments p ON r.id = p.reservation_id " +
              "WHERE p.reservation_id IS NULL " +
@@ -65,8 +74,7 @@ public class PaymentController {
                 guestCombo.getItems().add(rs.getString("guest"));
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -92,8 +100,7 @@ public class PaymentController {
 
             paymentTable.setItems(paymentList);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -146,8 +153,7 @@ public class PaymentController {
             selectedReservationId = 0;
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+    } catch (SQLException e) {
     }
 }
 
@@ -165,8 +171,7 @@ public class PaymentController {
 
             return pst.executeQuery().next();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
         return false;
     }
@@ -211,8 +216,7 @@ public class PaymentController {
             loadGuests();
             clearFields();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NumberFormatException | SQLException e) {
         }
     }
 
@@ -248,8 +252,7 @@ public class PaymentController {
 
             paymentTable.setItems(filtered);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 

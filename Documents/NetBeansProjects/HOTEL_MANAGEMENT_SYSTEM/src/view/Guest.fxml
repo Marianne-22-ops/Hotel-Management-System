@@ -1,97 +1,212 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
+<ScrollPane fitToWidth="true"
+            fitToHeight="false"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.GuestController"
-            style="-fx-background-color:#1e293b;">
+            style="-fx-background-color:#1e293b;
+                   -fx-background:#1e293b;"
+            prefWidth="700"
+            prefHeight="462"
+            minWidth="700"
+            minHeight="462">
 
-    <children>
+    <content>
+        <VBox spacing="12"
+              style="-fx-background-color:#1e293b;
+                     -fx-padding:16;">
 
-        <VBox spacing="20"
-              AnchorPane.topAnchor="20"
-              AnchorPane.leftAnchor="20"
-              AnchorPane.rightAnchor="20"
-              AnchorPane.bottomAnchor="20">
-
-            <!-- TITLE -->
+            <!-- PAGE TITLE -->
             <Label text="Guest Management"
-                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                   style="-fx-font-size:18px;
+                          -fx-font-weight:bold;
+                          -fx-text-fill:#f1f5f9;"/>
 
-            <!-- FORM BOX -->
-            <VBox spacing="12"
-                  style="-fx-background-color:rgba(255,255,255,0.8); -fx-padding:15; -fx-background-radius:12;">
+            <!-- FORM CARD -->
+            <VBox spacing="10"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
+
+                <Label text="GUEST DETAILS"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
                 <!-- ROW 1 -->
                 <HBox spacing="10">
-                    <TextField fx:id="nameField" promptText="Guest Name" HBox.hgrow="ALWAYS"/>
-                    <TextField fx:id="contactField" promptText="Contact Number"/>
-                    <TextField fx:id="emailField" promptText="Email"/>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Guest Name"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="nameField"
+                                   promptText="e.g. Juan Dela Cruz"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Contact Number"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="contactField"
+                                   promptText="e.g. 09XX-XXX-XXXX"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Email"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="emailField"
+                                   promptText="e.g. juan@email.com"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
                 </HBox>
 
                 <!-- ROW 2 -->
                 <HBox spacing="10">
-                    <TextField fx:id="addressField" promptText="Address" HBox.hgrow="ALWAYS"/>
-                    <ComboBox fx:id="idTypeCombo" promptText="ID Type"/>
-                    <TextField fx:id="idNumberField" promptText="ID Number"/>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Address"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="addressField"
+                                   promptText="e.g. Lucena City, Quezon"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" prefWidth="155">
+                        <Label text="ID Type"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <ComboBox fx:id="idTypeCombo"
+                                  promptText="Select ID Type"
+                                  prefWidth="155"
+                                  prefHeight="32"
+                                  style="-fx-background-color:#f8fafc;
+                                         -fx-border-color:#e2e8f0;
+                                         -fx-border-radius:6;
+                                         -fx-background-radius:6;
+                                         -fx-font-size:13px;"/>
+                    </VBox>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="ID Number"
+                               style="-fx-font-size:11px; -fx-text-fill:#64748b; -fx-font-weight:bold;"/>
+                        <TextField fx:id="idNumberField"
+                                   promptText="e.g. 1234-5678"
+                                   prefHeight="32"
+                                   style="-fx-background-color:#f8fafc;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-radius:6;
+                                          -fx-background-radius:6;
+                                          -fx-padding:4 10;
+                                          -fx-font-size:13px;"/>
+                    </VBox>
                 </HBox>
 
-                <!-- BUTTONS -->
-                <HBox spacing="10">
+                <Separator/>
 
-                    <Button text="Add Guest"
-                            onAction="#addGuest"/>
-
-                    <Button text="Edit Guest"
-                            onAction="#editGuest"/>
-
-                    <Button text="Delete Guest"
-                            onAction="#deleteGuest"/>
-
-                    <Button text="Activate Guest"
-                            onAction="#activateGuest"/>
-
+                <!-- ACTIONS -->
+                <Label text="ACTIONS"
+                       style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                <HBox spacing="8">
+                    <Button text="Add Guest" onAction="#addGuest" prefHeight="32"
+                            style="-fx-background-color:#2563eb; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                    <Button text="Edit Guest" onAction="#editGuest" prefHeight="32"
+                            style="-fx-background-color:#0f766e; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                    <Button text="Delete Guest" onAction="#deleteGuest" prefHeight="32"
+                            style="-fx-background-color:#dc2626; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
+                    <Button text="Activate Guest" onAction="#activateGuest" prefHeight="32"
+                            style="-fx-background-color:#7c3aed; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
                 </HBox>
+
+                <Separator/>
 
                 <!-- SEARCH -->
-                <HBox spacing="10">
-
+                <Label text="SEARCH"
+                       style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
                     <TextField fx:id="searchField"
                                promptText="Search Guest Name"
+                               prefHeight="32"
+                               style="-fx-background-color:#f8fafc;
+                                      -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:6;
+                                      -fx-background-radius:6;
+                                      -fx-padding:4 10;
+                                      -fx-font-size:13px;"
                                HBox.hgrow="ALWAYS"/>
-
-                    <Button text="Search"
-                            onAction="#searchGuest"/>
-
+                    <Button text="Search" onAction="#searchGuest" prefHeight="32"
+                            style="-fx-background-color:#0f172a; -fx-text-fill:white;
+                                   -fx-font-size:13px; -fx-font-weight:bold;
+                                   -fx-background-radius:6; -fx-padding:4 14; -fx-cursor:hand;"/>
                 </HBox>
 
             </VBox>
 
-            <!-- TABLE -->
-            <VBox VBox.vgrow="ALWAYS"
-                  style="-fx-background-color:rgba(255,255,255,0.8); -fx-padding:15; -fx-background-radius:12;">
+            <!-- TABLE CARD -->
+            <VBox spacing="8"
+                  style="-fx-background-color:white;
+                         -fx-padding:14;
+                         -fx-background-radius:10;">
 
-                <TableView fx:id="guestTable" VBox.vgrow="ALWAYS">
+                <Label text="GUEST LIST"
+                       style="-fx-font-size:10px;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#94a3b8;"/>
 
+                <TableView fx:id="guestTable"
+                           prefHeight="300"
+                           maxWidth="1.7976931348623157E308"
+                           style="-fx-background-color:transparent;
+                                  -fx-border-color:#e2e8f0;
+                                  -fx-border-radius:7;
+                                  -fx-background-radius:7;
+                                  -fx-table-cell-border-color:#f1f5f9;
+                                  -fx-font-size:13px;">
                     <columns>
-
-                        <TableColumn fx:id="colName" text="Name" prefWidth="140"/>
-                        <TableColumn fx:id="colContact" text="Contact" prefWidth="120"/>
-                        <TableColumn fx:id="colEmail" text="Email" prefWidth="150"/>
-                        <TableColumn fx:id="colAddress" text="Address" prefWidth="150"/>
-                        <TableColumn fx:id="colIdType" text="ID Type" prefWidth="120"/>
-                        <TableColumn fx:id="colIdNumber" text="ID No." prefWidth="120"/>
-                        <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
-
+                        <TableColumn fx:id="colName"     text="Name"     prefWidth="140"/>
+                        <TableColumn fx:id="colContact"  text="Contact"  prefWidth="120"/>
+                        <TableColumn fx:id="colEmail"    text="Email"    prefWidth="150"/>
+                        <TableColumn fx:id="colAddress"  text="Address"  prefWidth="150"/>
+                        <TableColumn fx:id="colIdType"   text="ID Type"  prefWidth="120"/>
+                        <TableColumn fx:id="colIdNumber" text="ID No."   prefWidth="120"/>
+                        <TableColumn fx:id="colStatus"   text="Status"   prefWidth="100"/>
                     </columns>
-
                 </TableView>
 
             </VBox>
 
         </VBox>
-
-    </children>
-</AnchorPane>
+    </content>
+</ScrollPane>
