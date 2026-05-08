@@ -38,7 +38,7 @@ public class ReservationController {
         reservationTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        statusCombo.getItems().addAll("Reserved", "Checked-in", "Checked-out", "Cancelled");
+        statusCombo.getItems().addAll("Reserved", "Checked-in", "Cancelled");
 
         colGuest.setCellValueFactory(data -> data.getValue().guestProperty());
         colRoom.setCellValueFactory(data -> data.getValue().roomProperty());
