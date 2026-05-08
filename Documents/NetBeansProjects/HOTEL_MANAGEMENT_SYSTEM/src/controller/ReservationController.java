@@ -38,7 +38,7 @@ public class ReservationController {
         reservationTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        statusCombo.getItems().addAll("Reserved", "Checked-in", "Cancelled");
+        statusCombo.getItems().addAll("Reserved", "Checked-in", "Cancelled", "Checked-out");
 
         colGuest.setCellValueFactory(data -> data.getValue().guestProperty());
         colRoom.setCellValueFactory(data -> data.getValue().roomProperty());
@@ -72,7 +72,7 @@ public class ReservationController {
             }
         });
 
-        // ✅ Black bold headers para sa dalawang table
+        // ✅ Black bold headers
         Platform.runLater(() -> {
             reservationTable.lookupAll(".column-header .label").forEach(node -> {
                 node.setStyle("-fx-text-fill: black; -fx-font-weight: bold;");
@@ -96,10 +96,10 @@ public class ReservationController {
             }
 
             String updateSql = "UPDATE reservations SET status='Checked-out' WHERE check_out < CURDATE() AND status='Checked-in'";
-            PreparedStatement pst = con.prepareStatement(updateSql);
-            pst.executeUpdate();
+            con.prepareStatement(updateSql).executeUpdate();
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -120,6 +120,7 @@ public class ReservationController {
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -136,6 +137,7 @@ public class ReservationController {
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -160,6 +162,7 @@ public class ReservationController {
             reservationTable.setItems(reservationList);
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -185,6 +188,7 @@ public class ReservationController {
             historyTable.setItems(historyList);
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -218,6 +222,7 @@ public class ReservationController {
             refreshAll();
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -250,15 +255,20 @@ public class ReservationController {
 
             if (newStatus.equals("Checked-out") || newStatus.equals("Cancelled")) {
 
+                // ✅ Room back to Available
                 updateRoomStatus(room, "Available");
 
+                // ✅ Guest back to Active (not Inactive)
                 PreparedStatement pst2 = con.prepareStatement(
-                        "UPDATE guests SET status='Inactive' WHERE name=?"
+                        "UPDATE guests SET status='Active' WHERE name=?"
                 );
                 pst2.setString(1, guestCombo.getValue());
                 pst2.executeUpdate();
 
-            } else {
+            } else if (newStatus.equals("Checked-in")) {
+                updateRoomStatus(room, "Occupied");
+
+            } else if (newStatus.equals("Reserved")) {
                 updateRoomStatus(room, "Occupied");
             }
 
@@ -266,6 +276,7 @@ public class ReservationController {
             refreshAll();
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -288,11 +299,19 @@ public class ReservationController {
             pst.executeUpdate();
 
             updateRoomStatus(selectedRoom, "Available");
-            logHistory(selectedGuest, "Cancelled");
 
+            // ✅ Guest back to Active after cancel
+            PreparedStatement pst2 = con.prepareStatement(
+                    "UPDATE guests SET status='Active' WHERE name=?"
+            );
+            pst2.setString(1, selectedGuest);
+            pst2.executeUpdate();
+
+            logHistory(selectedGuest, "Cancelled");
             refreshAll();
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -331,6 +350,7 @@ public class ReservationController {
             reservationTable.setItems(filtered);
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -362,6 +382,7 @@ public class ReservationController {
             pst.executeUpdate();
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -398,6 +419,7 @@ public class ReservationController {
             pst.executeUpdate();
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

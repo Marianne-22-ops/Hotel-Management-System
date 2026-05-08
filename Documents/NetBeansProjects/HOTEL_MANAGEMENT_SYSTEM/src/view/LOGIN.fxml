@@ -63,8 +63,7 @@
                             style="-fx-background-color:#1e293b; -fx-text-fill:white;"/>
 
 
-                    <Hyperlink text="Don't have an account? Register"
-                               onAction="#openRegister"/>
+              
 
                 </children>
 

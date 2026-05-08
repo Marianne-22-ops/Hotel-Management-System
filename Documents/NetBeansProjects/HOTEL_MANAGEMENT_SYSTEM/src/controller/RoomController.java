@@ -43,7 +43,7 @@ public class RoomController implements Initializable {
 
         typeCombo.getItems().addAll("Single", "Double", "Suite", "Deluxe");
 
-        statusCombo.getItems().addAll("Available", "Maintenance");
+        statusCombo.getItems().addAll("Available", "Maintenance", "Reserved");
 
         colRoomNo.setCellValueFactory(data -> data.getValue().roomNoProperty());
         colType.setCellValueFactory(data -> data.getValue().typeProperty());

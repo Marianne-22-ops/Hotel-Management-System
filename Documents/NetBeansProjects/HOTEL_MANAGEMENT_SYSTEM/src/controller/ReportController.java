@@ -9,6 +9,8 @@ import model.Report;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class ReportController {
 
@@ -27,9 +29,7 @@ public class ReportController {
 
         reportTypeCombo.getItems().addAll(
                 "Daily Report",
-                "Room Occupancy",
-                "Revenue Report",
-                "Guest Report"
+                "Monthly Report"
         );
 
         colGuest.setCellValueFactory(data -> data.getValue().guestProperty());
@@ -64,6 +64,7 @@ public class ReportController {
             totalRevenueLabel.setText("₱" + rs4.getDouble(1));
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -84,7 +85,7 @@ public class ReportController {
             rs2.next();
             checkOutLabel.setText(String.valueOf(rs2.getInt(1)));
 
-            String today = java.time.LocalDate.now().toString();
+            String today = LocalDate.now().toString();
             PreparedStatement pst3 = con.prepareStatement(
                     "SELECT COUNT(*) FROM reservations WHERE DATE(created_at)=?"
             );
@@ -94,13 +95,13 @@ public class ReportController {
             reservationLabel.setText(String.valueOf(rs3.getInt(1)));
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    // ================= TABLE =================
+    // ================= TRANSACTIONS =================
     private void loadTransactions() {
         reportList.clear();
-
         try {
             Connection con = DBConnection.connect();
 
@@ -120,27 +121,233 @@ public class ReportController {
             reportTable.setItems(reportList);
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ================= DAILY REPORT =================
+    private void loadDailyReport() {
+        reportList.clear();
+        try {
+            Connection con = DBConnection.connect();
+            String today = LocalDate.now().toString();
+
+            PreparedStatement pst = con.prepareStatement(
+                    "SELECT guest, room, amount, payment_date FROM payments " +
+                    "WHERE DATE(payment_date) = ? ORDER BY payment_date DESC"
+            );
+            pst.setString(1, today);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                reportList.add(new Report(
+                        rs.getString("guest"),
+                        rs.getString("room"),
+                        rs.getString("amount"),
+                        rs.getString("payment_date")
+                ));
+            }
+            reportTable.setItems(reportList);
+
+            PreparedStatement rev = con.prepareStatement(
+                    "SELECT SUM(amount) FROM payments WHERE DATE(payment_date) = ?"
+            );
+            rev.setString(1, today);
+            ResultSet revRs = rev.executeQuery();
+            revRs.next();
+            totalRevenueLabel.setText("₱" + revRs.getDouble(1));
+
+            PreparedStatement ci = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE DATE(check_in) = ?"
+            );
+            ci.setString(1, today);
+            ResultSet ciRs = ci.executeQuery();
+            ciRs.next();
+            checkInLabel.setText(String.valueOf(ciRs.getInt(1)));
+
+            PreparedStatement co = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE DATE(check_out) = ?"
+            );
+            co.setString(1, today);
+            ResultSet coRs = co.executeQuery();
+            coRs.next();
+            checkOutLabel.setText(String.valueOf(coRs.getInt(1)));
+
+            new Alert(Alert.AlertType.INFORMATION, "Daily Report: " + today).show();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ================= MONTHLY REPORT =================
+    private void loadMonthlyReport() {
+        reportList.clear();
+        try {
+            Connection con = DBConnection.connect();
+            String month = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+            PreparedStatement pst = con.prepareStatement(
+                    "SELECT guest, room, amount, payment_date FROM payments " +
+                    "WHERE DATE_FORMAT(payment_date, '%Y-%m') = ? ORDER BY payment_date DESC"
+            );
+            pst.setString(1, month);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                reportList.add(new Report(
+                        rs.getString("guest"),
+                        rs.getString("room"),
+                        rs.getString("amount"),
+                        rs.getString("payment_date")
+                ));
+            }
+            reportTable.setItems(reportList);
+
+            PreparedStatement rev = con.prepareStatement(
+                    "SELECT SUM(amount) FROM payments WHERE DATE_FORMAT(payment_date, '%Y-%m') = ?"
+            );
+            rev.setString(1, month);
+            ResultSet revRs = rev.executeQuery();
+            revRs.next();
+            totalRevenueLabel.setText("₱" + revRs.getDouble(1));
+
+            PreparedStatement ci = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE DATE_FORMAT(check_in, '%Y-%m') = ?"
+            );
+            ci.setString(1, month);
+            ResultSet ciRs = ci.executeQuery();
+            ciRs.next();
+            checkInLabel.setText(String.valueOf(ciRs.getInt(1)));
+
+            PreparedStatement co = con.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE DATE_FORMAT(check_out, '%Y-%m') = ?"
+            );
+            co.setString(1, month);
+            ResultSet coRs = co.executeQuery();
+            coRs.next();
+            checkOutLabel.setText(String.valueOf(coRs.getInt(1)));
+
+            new Alert(Alert.AlertType.INFORMATION, "Monthly Report: " + month).show();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ================= ROOM OCCUPANCY =================
+    private void loadRoomOccupancy() {
+        reportList.clear();
+        try {
+            Connection con = DBConnection.connect();
+
+            ResultSet rs = con.prepareStatement(
+                    "SELECT r.guest, r.room, rm.type, r.status FROM reservations r " +
+                    "JOIN rooms rm ON r.room = rm.room_no " +
+                    "WHERE r.status = 'Checked-in' ORDER BY r.room"
+            ).executeQuery();
+
+            while (rs.next()) {
+                reportList.add(new Report(
+                        rs.getString("guest"),
+                        rs.getString("room"),
+                        rs.getString("type"),
+                        rs.getString("status")
+                ));
+            }
+            reportTable.setItems(reportList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ================= REVENUE REPORT =================
+    private void loadRevenueReport() {
+        reportList.clear();
+        try {
+            Connection con = DBConnection.connect();
+
+            ResultSet rs = con.prepareStatement(
+                    "SELECT guest, room, amount, payment_date FROM payments ORDER BY payment_date DESC"
+            ).executeQuery();
+
+            while (rs.next()) {
+                reportList.add(new Report(
+                        rs.getString("guest"),
+                        rs.getString("room"),
+                        rs.getString("amount"),
+                        rs.getString("payment_date")
+                ));
+            }
+            reportTable.setItems(reportList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ================= GUEST REPORT =================
+    private void loadGuestReport() {
+        reportList.clear();
+        try {
+            Connection con = DBConnection.connect();
+
+            ResultSet rs = con.prepareStatement(
+                    "SELECT g.name, r.room, r.status, r.check_in FROM guests g " +
+                    "LEFT JOIN reservations r ON g.name = r.guest ORDER BY g.name"
+            ).executeQuery();
+
+            while (rs.next()) {
+                reportList.add(new Report(
+                        rs.getString("name"),
+                        rs.getString("room") != null ? rs.getString("room") : "N/A",
+                        rs.getString("status") != null ? rs.getString("status") : "N/A",
+                        rs.getString("check_in") != null ? rs.getString("check_in") : "N/A"
+                ));
+            }
+            reportTable.setItems(reportList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     // ================= GENERATE =================
     @FXML
     private void generateReport() {
-        if (reportTypeCombo.getValue() == null) {
-            new Alert(Alert.AlertType.WARNING, "Select report type").show();
+        String selected = reportTypeCombo.getValue();
+
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "Select a report type first!").show();
             return;
         }
 
+        switch (selected) {
+            case "Daily Report"   -> loadDailyReport();
+            case "Monthly Report" -> loadMonthlyReport();
+            case "Room Occupancy" -> loadRoomOccupancy();
+            case "Revenue Report" -> loadRevenueReport();
+            case "Guest Report"   -> loadGuestReport();
+        }
+
         loadSummary();
-        loadTodayActivity();
-        loadTransactions();
     }
 
     // ================= EXPORT =================
     @FXML
     private void exportReport() {
+        if (reportList.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No data to export! Generate a report first.").show();
+            return;
+        }
         try {
-            try (FileWriter writer = new FileWriter("report.csv")) {
+            String filename = (reportTypeCombo.getValue() != null
+                    ? reportTypeCombo.getValue().replace(" ", "_")
+                    : "report") + "_" + LocalDate.now() + ".csv";
+
+            try (FileWriter writer = new FileWriter(filename)) {
+                writer.write("Guest,Room,Amount/Type,Date/Status\n");
                 for (Report r : reportList) {
                     writer.write(r.guestProperty().get() + "," +
                             r.roomProperty().get() + "," +
@@ -148,15 +355,22 @@ public class ReportController {
                             r.dateProperty().get() + "\n");
                 }
             }
-            new Alert(Alert.AlertType.INFORMATION, "Exported!").show();
+            new Alert(Alert.AlertType.INFORMATION, "Exported to: " + filename).show();
 
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     // ================= PRINT =================
     @FXML
     private void printReport() {
-        System.out.println("Printing report...");
+        if (reportList.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No data to print! Generate a report first.").show();
+            return;
+        }
+        new Alert(Alert.AlertType.INFORMATION,
+                "Printing: " + reportTypeCombo.getValue() +
+                "\nTotal records: " + reportList.size()).show();
     }
 }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0"
+<AnchorPane prefHeight="600.0" prefWidth="900.0"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.DashboardController"
@@ -15,7 +17,7 @@
 
     <children>
 
-        <BorderPane prefHeight="500.0" prefWidth="800.0">
+        <BorderPane prefHeight="600.0" prefWidth="900.0">
 
             <!-- ═══════════ HEADER ═══════════ -->
             <top>
@@ -35,6 +37,16 @@
                                 <font><Font name="System Bold" size="18.0"/></font>
                             </Label>
                         </HBox>
+
+                        <!-- LIVE CLOCK -->
+                        <HBox AnchorPane.rightAnchor="20.0"
+                              prefHeight="58.0"
+                              alignment="CENTER_RIGHT">
+                            <Label fx:id="lblDateTime"
+                                   text="--"
+                                   style="-fx-text-fill:#94a3b8;
+                                          -fx-font-size:12px;"/>
+                        </HBox>
                     </children>
                 </AnchorPane>
             </top>
@@ -53,92 +65,49 @@
                                       -fx-font-size:10px;
                                       -fx-padding:0 0 6 4;"/>
 
-                        <Button fx:id="btnDashboard"
-                                text="  Dashboard"
-                                onAction="#handleDashboard"
-                                prefWidth="171.0"
-                                style="-fx-background-color:#1d4ed8;
-                                       -fx-text-fill:white;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button fx:id="btnDashboard" text="  Dashboard"
+                                onAction="#handleDashboard" prefWidth="171.0"
+                                style="-fx-background-color:#1d4ed8; -fx-text-fill:white;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
-                        <Button fx:id="btnRooms"
-                                text="  Manage Rooms"
-                                onAction="#handleRooms"
-                                prefWidth="171.0"
-                                style="-fx-background-color:transparent;
-                                       -fx-text-fill:#94a3b8;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button fx:id="btnRooms" text="  Manage Rooms"
+                                onAction="#handleRooms" prefWidth="171.0"
+                                style="-fx-background-color:transparent; -fx-text-fill:#94a3b8;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
-                        <Button fx:id="btnGuests"
-                                text="  Manage Guests"
-                                onAction="#handleGuests"
-                                prefWidth="171.0"
-                                style="-fx-background-color:transparent;
-                                       -fx-text-fill:#94a3b8;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button fx:id="btnGuests" text="  Manage Guests"
+                                onAction="#handleGuests" prefWidth="171.0"
+                                style="-fx-background-color:transparent; -fx-text-fill:#94a3b8;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
-                        <Button fx:id="btnReservations"
-                                text="  Reservations"
-                                onAction="#handleReservations"
-                                prefWidth="171.0"
-                                style="-fx-background-color:transparent;
-                                       -fx-text-fill:#94a3b8;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button fx:id="btnReservations" text="  Reservations"
+                                onAction="#handleReservations" prefWidth="171.0"
+                                style="-fx-background-color:transparent; -fx-text-fill:#94a3b8;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
-                        <Button fx:id="btnPayments"
-                                text="  Payments"
-                                onAction="#handlePayments"
-                                prefWidth="171.0"
-                                style="-fx-background-color:transparent;
-                                       -fx-text-fill:#94a3b8;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button fx:id="btnPayments" text="  Payments"
+                                onAction="#handlePayments" prefWidth="171.0"
+                                style="-fx-background-color:transparent; -fx-text-fill:#94a3b8;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
-                        <Button fx:id="btnReports"
-                                text="  Reports"
-                                onAction="#handleReports"
-                                prefWidth="171.0"
-                                style="-fx-background-color:transparent;
-                                       -fx-text-fill:#94a3b8;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button fx:id="btnReports" text="  Reports"
+                                onAction="#handleReports" prefWidth="171.0"
+                                style="-fx-background-color:transparent; -fx-text-fill:#94a3b8;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
                         <Region VBox.vgrow="ALWAYS"/>
-
                         <Separator style="-fx-background-color:#1e293b;" prefWidth="171.0"/>
 
-                        <Button text="  Logout"
-                                onAction="#handleLogout"
-                                prefWidth="171.0"
-                                style="-fx-background-color:#7f1d1d;
-                                       -fx-text-fill:#fca5a5;
-                                       -fx-font-size:13px;
-                                       -fx-background-radius:7;
-                                       -fx-alignment:CENTER_LEFT;
-                                       -fx-padding:9 12 9 12;
-                                       -fx-cursor:hand;"/>
+                        <Button text="  Logout" onAction="#handleLogout" prefWidth="171.0"
+                                style="-fx-background-color:#7f1d1d; -fx-text-fill:#fca5a5;
+                                       -fx-font-size:13px; -fx-background-radius:7;
+                                       -fx-alignment:CENTER_LEFT; -fx-padding:9 12 9 12; -fx-cursor:hand;"/>
 
                     </children>
                 </VBox>
@@ -149,96 +118,173 @@
                 <AnchorPane fx:id="workspacePane"
                             style="-fx-background-color:#f1f5f9;">
                     <padding>
-                        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                        <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
                     </padding>
 
                     <children>
 
-                        <!-- SUMMARY CARDS -->
-                        <HBox spacing="10.0" layoutX="20.0" layoutY="20.0">
+                        <!-- MAIN CONTENT: LEFT chart + RIGHT room status cards -->
+                        <HBox spacing="14.0"
+                              AnchorPane.topAnchor="16"
+                              AnchorPane.leftAnchor="16"
+                              AnchorPane.rightAnchor="16"
+                              AnchorPane.bottomAnchor="16">
 
-                            <VBox prefWidth="160.0" prefHeight="88.0"
-                                  style="-fx-background-color:#2563eb;
-                                         -fx-background-radius:10;
-                                         -fx-padding:14 14 14 14;
-                                         -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.3), 8, 0, 0, 3);">
-                                <Label text="TOTAL ROOMS"
-                                       style="-fx-text-fill:rgba(255,255,255,0.75);
-                                              -fx-font-size:9px;
-                                              -fx-padding:0 0 4 0;"/>
-                                <Label fx:id="lblRooms" text="0"
-                                       style="-fx-text-fill:white;
-                                              -fx-font-size:22px;
-                                              -fx-font-weight:bold;"/>
+                            <!-- LEFT COLUMN -->
+                            <VBox spacing="12" HBox.hgrow="ALWAYS">
+
+                                <!-- TOP SUMMARY CARDS -->
+                                <HBox spacing="10">
+                                    <VBox prefWidth="140.0" prefHeight="80.0"
+                                          style="-fx-background-color:#2563eb; -fx-background-radius:10;
+                                                 -fx-padding:12 14 12 14;
+                                                 -fx-effect:dropshadow(gaussian,rgba(37,99,235,0.3),8,0,0,3);">
+                                        <Label text="TOTAL ROOMS"
+                                               style="-fx-text-fill:rgba(255,255,255,0.75); -fx-font-size:9px; -fx-padding:0 0 4 0;"/>
+                                        <Label fx:id="lblRooms" text="0"
+                                               style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                                    </VBox>
+                                    <VBox prefWidth="140.0" prefHeight="80.0"
+                                          style="-fx-background-color:#ea580c; -fx-background-radius:10;
+                                                 -fx-padding:12 14 12 14;
+                                                 -fx-effect:dropshadow(gaussian,rgba(234,88,12,0.3),8,0,0,3);">
+                                        <Label text="GUESTS"
+                                               style="-fx-text-fill:rgba(255,255,255,0.75); -fx-font-size:9px; -fx-padding:0 0 4 0;"/>
+                                        <Label fx:id="lblGuests" text="0"
+                                               style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                                    </VBox>
+                                    <VBox prefWidth="140.0" prefHeight="80.0"
+                                          style="-fx-background-color:#059669; -fx-background-radius:10;
+                                                 -fx-padding:12 14 12 14;
+                                                 -fx-effect:dropshadow(gaussian,rgba(5,150,105,0.3),8,0,0,3);">
+                                        <Label text="REVENUE"
+                                               style="-fx-text-fill:rgba(255,255,255,0.75); -fx-font-size:9px; -fx-padding:0 0 4 0;"/>
+                                        <Label fx:id="lblRevenue" text="0"
+                                               style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                                    </VBox>
+                                    <VBox prefWidth="140.0" prefHeight="80.0"
+                                          style="-fx-background-color:#7c3aed; -fx-background-radius:10;
+                                                 -fx-padding:12 14 12 14;
+                                                 -fx-effect:dropshadow(gaussian,rgba(124,58,237,0.3),8,0,0,3);">
+                                        <Label text="RESERVATIONS"
+                                               style="-fx-text-fill:rgba(255,255,255,0.75); -fx-font-size:9px; -fx-padding:0 0 4 0;"/>
+                                        <Label fx:id="lblReservations" text="0"
+                                               style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                                    </VBox>
+                                </HBox>
+
+                                <!-- BARCHART — Monthly Revenue -->
+                                <VBox VBox.vgrow="ALWAYS"
+                                      style="-fx-background-color:white;
+                                             -fx-background-radius:10;
+                                             -fx-border-color:#e2e8f0;
+                                             -fx-border-width:1;
+                                             -fx-border-radius:10;
+                                             -fx-padding:14 16 8 16;">
+                                    <Label text="Monthly Revenue"
+                                           style="-fx-text-fill:#475569; -fx-font-size:12px;
+                                                  -fx-font-weight:bold; -fx-padding:0 0 8 0;"/>
+                                    <BarChart fx:id="revenueChart"
+                                              VBox.vgrow="ALWAYS"
+                                              animated="false"
+                                              style="-fx-background-color:transparent;">
+                                        <xAxis>
+                                            <CategoryAxis label="Month"/>
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis label="Revenue (₱)"/>
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+
+                                <!-- TODAY'S CHECK-IN / CHECK-OUT -->
+                                <VBox prefHeight="180.0"
+                                      style="-fx-background-color:white;
+                                             -fx-background-radius:10;
+                                             -fx-border-color:#e2e8f0;
+                                             -fx-border-width:1;
+                                             -fx-border-radius:10;
+                                             -fx-padding:14 16 12 16;">
+                                    <Label text="Today's Check-in / Check-out"
+                                           style="-fx-text-fill:#475569; -fx-font-size:12px;
+                                                  -fx-font-weight:bold; -fx-padding:0 0 8 0;"/>
+                                    <ScrollPane fitToWidth="true"
+                                                hbarPolicy="NEVER"
+                                                vbarPolicy="AS_NEEDED"
+                                                VBox.vgrow="ALWAYS"
+                                                style="-fx-background-color:transparent;
+                                                       -fx-background:transparent;
+                                                       -fx-border-color:transparent;">
+                                        <content>
+                                            <VBox fx:id="todayActivityBox" spacing="6"/>
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+
                             </VBox>
 
-                            <VBox prefWidth="160.0" prefHeight="88.0"
-                                  style="-fx-background-color:#ea580c;
-                                         -fx-background-radius:10;
-                                         -fx-padding:14 14 14 14;
-                                         -fx-effect: dropshadow(gaussian, rgba(234,88,12,0.3), 8, 0, 0, 3);">
-                                <Label text="GUESTS"
-                                       style="-fx-text-fill:rgba(255,255,255,0.75);
-                                              -fx-font-size:9px;
-                                              -fx-padding:0 0 4 0;"/>
-                                <Label fx:id="lblGuests" text="0"
-                                       style="-fx-text-fill:white;
-                                              -fx-font-size:22px;
-                                              -fx-font-weight:bold;"/>
-                            </VBox>
+                            <!-- RIGHT COLUMN — Room Status Cards vertical -->
+                            <VBox spacing="10" prefWidth="155.0">
 
-                            <VBox prefWidth="160.0" prefHeight="88.0"
-                                  style="-fx-background-color:#059669;
-                                         -fx-background-radius:10;
-                                         -fx-padding:14 14 14 14;
-                                         -fx-effect: dropshadow(gaussian, rgba(5,150,105,0.3), 8, 0, 0, 3);">
-                                <Label text="REVENUE"
-                                       style="-fx-text-fill:rgba(255,255,255,0.75);
-                                              -fx-font-size:9px;
-                                              -fx-padding:0 0 4 0;"/>
-                                <Label fx:id="lblRevenue" text="0"
-                                       style="-fx-text-fill:white;
-                                              -fx-font-size:22px;
-                                              -fx-font-weight:bold;"/>
-                            </VBox>
+                                <Label text="ROOM STATUS"
+                                       style="-fx-text-fill:#64748b; -fx-font-size:10px;
+                                              -fx-font-weight:bold; -fx-padding:4 0 2 2;"/>
 
-                            <VBox prefWidth="160.0" prefHeight="88.0"
-                                  style="-fx-background-color:#7c3aed;
-                                         -fx-background-radius:10;
-                                         -fx-padding:14 14 14 14;
-                                         -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.3), 8, 0, 0, 3);">
-                                <Label text="RESERVATIONS"
-                                       style="-fx-text-fill:rgba(255,255,255,0.75);
-                                              -fx-font-size:9px;
-                                              -fx-padding:0 0 4 0;"/>
-                                <Label fx:id="lblReservations" text="0"
-                                       style="-fx-text-fill:white;
-                                              -fx-font-size:22px;
-                                              -fx-font-weight:bold;"/>
+                                <!-- Available -->
+                                <VBox prefHeight="100.0"
+                                      style="-fx-background-color:#dcfce7;
+                                             -fx-background-radius:10;
+                                             -fx-padding:14;">
+                                    <Label text="AVAILABLE"
+                                           style="-fx-text-fill:#166534; -fx-font-size:9px; -fx-font-weight:bold;"/>
+                                    <Label fx:id="lblAvailable" text="0"
+                                           style="-fx-text-fill:#166534; -fx-font-size:28px; -fx-font-weight:bold;"/>
+                                    <Label text="Ready for check-in"
+                                           style="-fx-text-fill:#166534; -fx-font-size:10px;"/>
+                                </VBox>
+
+                                <!-- Occupied -->
+                                <VBox prefHeight="100.0"
+                                      style="-fx-background-color:#fee2e2;
+                                             -fx-background-radius:10;
+                                             -fx-padding:14;">
+                                    <Label text="OCCUPIED"
+                                           style="-fx-text-fill:#991b1b; -fx-font-size:9px; -fx-font-weight:bold;"/>
+                                    <Label fx:id="lblOccupied" text="0"
+                                           style="-fx-text-fill:#991b1b; -fx-font-size:28px; -fx-font-weight:bold;"/>
+                                    <Label text="Currently checked in"
+                                           style="-fx-text-fill:#991b1b; -fx-font-size:10px;"/>
+                                </VBox>
+
+                                <!-- Maintenance -->
+                                <VBox prefHeight="100.0"
+                                      style="-fx-background-color:#fef3c7;
+                                             -fx-background-radius:10;
+                                             -fx-padding:14;">
+                                    <Label text="MAINTENANCE"
+                                           style="-fx-text-fill:#92400e; -fx-font-size:9px; -fx-font-weight:bold;"/>
+                                    <Label fx:id="lblMaintenance" text="0"
+                                           style="-fx-text-fill:#92400e; -fx-font-size:28px; -fx-font-weight:bold;"/>
+                                    <Label text="Under repair"
+                                           style="-fx-text-fill:#92400e; -fx-font-size:10px;"/>
+                                </VBox>
+
+                                <!-- Reserved -->
+                                <VBox prefHeight="100.0"
+                                      style="-fx-background-color:#e0e7ff;
+                                             -fx-background-radius:10;
+                                             -fx-padding:14;">
+                                    <Label text="RESERVED"
+                                           style="-fx-text-fill:#3730a3; -fx-font-size:9px; -fx-font-weight:bold;"/>
+                                    <Label fx:id="lblReservedRooms" text="0"
+                                           style="-fx-text-fill:#3730a3; -fx-font-size:28px; -fx-font-weight:bold;"/>
+                                    <Label text="Incoming guests"
+                                           style="-fx-text-fill:#3730a3; -fx-font-size:10px;"/>
+                                </VBox>
+
                             </VBox>
 
                         </HBox>
-
-                        <!-- CHART PANEL -->
-                        <VBox layoutX="20.0" layoutY="130.0"
-                              prefWidth="550.0"
-                              style="-fx-background-color:white;
-                                     -fx-background-radius:10;
-                                     -fx-border-color:#e2e8f0;
-                                     -fx-border-width:1;
-                                     -fx-border-radius:10;
-                                     -fx-padding:16 16 8 16;">
-                            <Label text="Room Occupancy Breakdown"
-                                   style="-fx-text-fill:#475569;
-                                          -fx-font-size:12px;
-                                          -fx-padding:0 0 8 0;"/>
-                            <PieChart fx:id="roomChart"
-                                      prefWidth="518.0"
-                                      prefHeight="280.0"
-                                      legendVisible="true"
-                                      labelsVisible="true"
-                                      style="-fx-background-color:transparent;"/>
-                        </VBox>
 
                     </children>
 

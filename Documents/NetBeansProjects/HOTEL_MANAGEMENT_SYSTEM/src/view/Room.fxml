@@ -14,9 +14,9 @@
             fx:controller="controller.RoomController"
             style="-fx-background-color:#1e293b;
                    -fx-background:#1e293b;"
-            prefWidth="700"
+            prefWidth="650"
             prefHeight="462"
-            minWidth="700"
+            minWidth="650"
             minHeight="462">
 
     <content>

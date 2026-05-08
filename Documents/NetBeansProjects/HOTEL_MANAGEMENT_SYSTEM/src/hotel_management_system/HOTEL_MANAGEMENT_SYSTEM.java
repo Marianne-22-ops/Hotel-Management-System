@@ -13,7 +13,7 @@ public class HOTEL_MANAGEMENT_SYSTEM extends Application {
 
         Parent root;
         root = FXMLLoader.load(
-                getClass().getResource("/view/REGISTER.fxml")
+                getClass().getResource("/view/LOGIN.fxml")
         );
 
         Scene scene = new Scene(root);
